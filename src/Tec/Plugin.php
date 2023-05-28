@@ -547,16 +547,16 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 * Sample:
 	 *
 	$data = [
-	'create_hash'     => true,
-	'origin_meta_key' => '_TCOrderOrigin',
-	'connections'     => [
-	0 => [
-	'multiple'            => false,
-	'record_meta_key'     => '_tec_tc_order_events_in_order',
-	'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different than record_meta_key
-	'linked_post_type'    => 'tribe_events',
-	],
-	],
+		'create_hash'     => true,
+		'origin_meta_key' => '_TCOrderOrigin',
+		'connections'     => [
+			0 => [
+		        'multiple'            => false,
+				'record_meta_key'     => '_tec_tc_order_events_in_order',
+				'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different than record_meta_key
+				'linked_post_type'    => 'tribe_events',
+			],
+		],
 	];
 	 *
 	 * @param array  $data      Data defining the connections and what needs to be updated.
