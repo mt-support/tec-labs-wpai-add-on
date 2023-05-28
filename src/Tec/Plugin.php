@@ -542,6 +542,154 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Create the new links between the posts.
+	 *
+	 * Sample:
+	 *
+	$data = [
+	'create_hash'     => true,
+	'origin_meta_key' => '_TCOrderOrigin',
+	'connections'     => [
+	0 => [
+	'multiple'            => false,
+	'record_meta_key'     => '_tec_tc_order_events_in_order',
+	'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different than record_meta_key
+	'linked_post_type'    => 'tribe_events',
+	],
+	],
+	];
+	 *
+	 * @param array  $data      Data defining the connections and what needs to be updated.
+	 * @param int    $post_id   The new post ID.
+	 * @param string $post_type The post type.
+	 * @param array  $record    The post data.
+	 *
+	 * @return void
+	 */
+	function relink_posts( $data, $post_id, $post_type, $record ) {
+		// Start logging
+		$msg = "<strong>TEC - Starting relinking process...</strong>";
+		$this->add_to_log( $msg );
+
+		// If title is empty use post ID.
+		$post_title = empty( $record['title'] ) ? "post (ID: " . $post_id . ")" : "`" . $record['title'] . "`";
+
+		// 1. Create and save the hash based on the old post ID.
+		if ( $data['create_hash'] ) {
+			$hash_meta_key = "_" . $post_type . "_export_hash";
+
+			$msg = "Creating hash for " . $post_title . " was ";
+			$msg .= update_post_meta( $post_id, $hash_meta_key, $this->hashit( $record['id'] ) ) ? "successful" : "NOT successful (or entry already exists)";
+			$this->add_to_log( $msg );
+		}
+
+		// 2. Save / Update the origin of the post type.
+		if ( ! empty( $data['origin_meta_key'] ) ) {
+			$msg = "Updating origin for " . $post_title . " was ";
+			$msg .= update_post_meta( $post_id, $data['origin_meta_key'], 'WPAI' ) ? "successful" : "NOT successful (or entry already exists)";
+			$this->add_to_log( $msg );
+		}
+
+		// 3. Update all the links between the post types.
+		if ( ! empty ( $data['connections'] ) ) {
+			$update_successful = false;
+
+			foreach ( $data['connections'] as $connection ) {
+				$record_meta_key = $connection['record_meta_key'];
+
+				// If the given meta key has a value in the record, do it.
+				if ( ! empty ( $record[ $record_meta_key ] ) ) {
+
+					// If there are multiple connections, e.g. more organizers for an event.
+					if ( $connection['multiple'] ) {
+						$multiple = false;
+						$ids      = $this->maybe_explode( $record[ $record_meta_key ] );
+						foreach ( $ids as $id ) {
+							$this->old_linked_post_id = $id;
+							$record[ $record_meta_key ] = $id;
+							$update_successful = $this->update_linked_post_meta(
+								$connection['linked_post_type'],
+								! empty ( $connection['connection_meta_key'] ) ? $connection['connection_meta_key'] : $record_meta_key,
+								$post_id,
+								$record,
+								$multiple
+							);
+
+							$msg = $multiple ? "Adding " : "Updating ";
+							$msg .= "metadata `" . $record_meta_key . "` for " . $post_title . " was ";
+							$msg .= $update_successful ? "successful" : "NOT successful (or linked post doesn't exist)";
+							$this->add_to_log( $msg );
+							$multiple = true;
+
+							// Update the ticket IDs in the metadata
+							if ( $post_type == 'tec_tc_order' && $record_meta_key == '_tec_tc_order_tickets_in_order' && $update_successful ) {
+								$this->replace_ids_in_metavalue( $post_id, $data, $record );
+							}
+						}
+					} else {
+						$update_successful = $this->update_linked_post_meta( $connection['linked_post_type'], $record_meta_key, $post_id, $record );
+						$msg = "Updating metadata `" . $record_meta_key . "` for " . $post_title . " was ";
+						$msg .= $update_successful ? "successful" : "NOT successful";
+						$this->add_to_log( $msg );
+					}
+				}
+			}
+
+			// 4. Resave _tribe_default_ticket_provider for tribe_events
+			// Because WPAI runs wp_unslash()
+			if ( $post_type == 'tribe_events' ) {
+				if ( ! empty( $record['_tribe_default_ticket_provider'] ) ) {
+					update_post_meta( $post_id, '_tribe_default_ticket_provider', $record['_tribe_default_ticket_provider'] );
+					$this->add_to_log( "Ticket provider updated" );
+				}
+			}
+
+			// 5. Update post_name (new id) and post_parent (new order id) for tc attendees
+			if ( $post_type == 'tec_tc_attendee' ) {
+				$stop = false;
+
+				// If there is no record for the parent in the source data, then stop.
+				if ( ! isset( $record['parent'] ) ) {
+					$this->add_to_log( 'Post parent missing from import data...' );
+					$stop = true;
+				} else {
+					// Hash the old linked post type ID (tec_tc_order).
+					$this->meta_value = $this->hashit( $record['parent'] );
+					$this->meta_key   = "_tec_tc_order_export_hash";
+
+					// Grab the new post ID based on the hash.
+					$new_parent = $this->grab_post_id_based_on_meta();
+
+					// If the parent cannot be found in the database then stop.
+					if ( $new_parent == null ) {
+						$this->add_to_log( 'Post parent couldn\'t be found in database...' );
+						$stop = true;
+					}
+				}
+
+				if ( $stop ) {
+					$this->add_to_log( 'Deleting post' );
+					wp_delete_post( $post_id );
+				} else {
+					$args    = [
+						'ID'             => $post_id,
+						'post_name'      => $post_id,
+						'post_parent'    => $new_parent,
+						'comment_status' => 'closed',
+						'ping_status'    => 'closed',
+					];
+					$success = wp_update_post( $args );
+
+					// Logging
+					$msg = "Updating post name and post parent for Attendee ";
+					$msg .= $success ? "successful" : "NOT successful";
+					$this->add_to_log( $msg );
+				}
+			}
+		}
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
