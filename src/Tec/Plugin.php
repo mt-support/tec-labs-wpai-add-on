@@ -148,6 +148,8 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
 
+		add_action( 'pmxi_saved_post', [ $this, 'maybe_update_post' ], 10, 3 );
+
 		// End binds.
 
 		$this->container->register( Hooks::class );
@@ -203,6 +205,181 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Do modifications after a post and its post meta have been saved.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param mixed $xml_node  The post data in XML format.
+	 * @param bool  $is_update Whether it's an update or not.
+	 * @param int   $post_id   The ID of the inserted post.
+	 *
+	 * @return void
+	 *
+	 */
+	function maybe_update_post( $post_id, $xml_node, $is_update ) {
+		// Convert SimpleXml object to array for easier use.
+		$record = json_decode( json_encode( ( array ) $xml_node ), 1 );
+
+		// Grab the post type of the post being imported.
+		$post_type = get_post_type( $post_id );
+
+		// Check if the post type after the import is still the same.
+		// TODO: Should we delete the imported
+		if ( $post_type != $record['posttype'] ) {
+			$this->add_to_log( "<span style='color:red;'><strong>POST TYPES DON'T MATCH!!!</strong></span> Original post type: `" . $record['posttype'] . "`. Post type after import: `" . $post_type . "`. Imported post will be deleted." );
+
+			/**
+			 * Filter to allow keeping a post even if the new post type doesn't match the original one.
+			 */
+			if ( apply_filters( 'tec_labs_wpai_delete_mismatching_post_type', true ) ) {
+				wp_delete_post( $post_id, true );
+				$this->add_to_log( "Post (ID: " . $post_id . ") deleted" );
+			}
+		}
+
+		// Update origin for Venues.
+		if ( $post_type == 'tribe_venue' ) {
+			$data = [
+				'create_hash'     => true,
+				'origin_meta_key' => '_VenueOrigin',
+			];
+		}
+
+		// Update origin for Organizers.
+		if ( $post_type == 'tribe_organizer' ) {
+			$data = [
+				'create_hash'     => true,
+				'origin_meta_key' => '_OrganizerOrigin',
+			];
+		}
+
+		if ( $post_type == 'tribe_events' ) {
+			$data                  = [
+				'create_hash'     => true,
+				'origin_meta_key' => '_EventOrigin',
+				'connections'     => [
+					0 => [
+						'multiple'            => false,
+						'record_meta_key'     => '_eventvenueid',
+						'connection_meta_key' => '_EventVenueID',
+						'linked_post_type'    => 'tribe_venue',
+					],
+					1 => [
+						'multiple'            => true,
+						'record_meta_key'     => '_eventorganizerid',
+						'connection_meta_key' => '_EventOrganizerID',
+						'linked_post_type'    => 'tribe_organizer',
+					],
+				],
+			];
+		}
+
+		/**
+		 * RSVP tickets
+		 */
+		if ( $post_type == 'tribe_rsvp_tickets' ) {
+			$data                  = [
+				'create_hash'     => true,
+				'origin_meta_key' => '_RsvpOrigin',
+				'connections'     => [
+					0 => [
+						'multiple'         => false,
+						'record_meta_key'  => '_tribe_rsvp_for_event',
+						'linked_post_type' => 'tribe_events',
+					],
+				],
+			];
+		}
+
+		/**
+		 * Attendees for RSVPs
+		 */
+		if ( $post_type == 'tribe_rsvp_attendees' ) {
+			$data                  = [
+				'create_hash'     => false,
+				'origin_meta_key' => '_RsvpAttendeeOrigin',
+				'connections'     => [
+					0 => [
+						'multiple'         => false,
+						'record_meta_key'  => '_tribe_rsvp_event',
+						'linked_post_type' => 'tribe_events',
+					],
+					1 => [
+						'multiple'         => false,
+						'record_meta_key'  => '_tribe_rsvp_product',
+						'linked_post_type' => 'tribe_rsvp_tickets',
+					],
+				],
+			];
+		}
+
+		/**
+		 * Tickets with Tickets Commerce (Stripe)
+		 */
+		if ( $post_type == 'tec_tc_ticket' ) {
+			$data                  = [
+				'create_hash'     => true,
+				'origin_meta_key' => '_TcTicketOrigin',
+				'connections'     => [
+					0 => [
+						'multiple'         => false,
+						'record_meta_key'  => '_tec_tickets_commerce_event',
+						'linked_post_type' => 'tribe_events',
+					],
+				],
+			];
+		}
+
+		/**
+		 * Orders with Tickets Commerce (Stripe)
+		 */
+		if ( $post_type == 'tec_tc_order' ) {
+			$data                  = [
+				'create_hash'     => true,
+				'origin_meta_key' => '_TCOrderOrigin',
+				'connections'     => [
+					0 => [
+						'multiple'         => false,
+						'record_meta_key'  => '_tec_tc_order_events_in_order',
+						'linked_post_type' => 'tribe_events',
+					],
+					1 => [
+						'multiple'         => true,
+						'record_meta_key'  => '_tec_tc_order_tickets_in_order',
+						'linked_post_type' => 'tec_tc_ticket',
+					],
+				],
+			];
+		}
+
+		/**
+		 * Attendees for Tickets Commerce (Stripe)
+		 */
+		if ( $post_type == 'tec_tc_attendee' ) {
+			$data                  = [
+				'create_hash'     => false,
+				'origin_meta_key' => '_TcAttendeeOrigin',
+				'connections'     => [
+					0 => [
+						'multiple'         => false,
+						'record_meta_key'  => '_tec_tickets_commerce_event',
+						'linked_post_type' => 'tribe_events',
+					],
+					1 => [
+						'multiple'         => false,
+						'record_meta_key'  => '_tec_tickets_commerce_ticket',
+						'linked_post_type' => 'tec_tc_ticket',
+					],
+				],
+			];
+		}
+
+		if ( ! empty( $data ) ) {
+			$this->relink_posts( $data, $post_id, $post_type, $record );
+		}
 	}
 
 	/**
