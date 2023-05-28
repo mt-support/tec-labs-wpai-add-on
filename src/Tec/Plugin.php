@@ -141,7 +141,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 		// Start binds.
 
-
+		add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
 
 		// End binds.
 
@@ -149,6 +149,19 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$this->container->register( Assets::class );
 	}
 
+	/**
+	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
+	 *
+	 * @param array $args Post type arguments.
+	 *
+	 * @return array
+	 */
+	function tc_attendees_label( $args ) {
+		$args['label'] = "Attendees - Tickets Commerce";
+
+		return $args;
+	}
+	
 	/**
 	 * Checks whether the plugin dependency manifest is satisfied or not.
 	 *
