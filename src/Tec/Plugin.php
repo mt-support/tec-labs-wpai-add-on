@@ -721,6 +721,46 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Update the meta field based on the found hash
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $linked_post_type   The connected post type.
+	 * @param string $meta_key_to_update The meta field that needs to be updated.
+	 * @param int    $post_id            The ID of the last inserted post.
+	 * @param array  $record             The data of the last inserted post.
+	 * @param bool   $multiple           Whether we are importing more values for the same meta key.
+	 *
+	 * @return int|false                 Meta ID (add) or true (update) on success, false on failure.
+	 *
+	 */
+	private function update_linked_post_meta( $linked_post_type, $meta_key_to_update, $post_id, $record, $multiple = false ) {
+		$this->add_to_log( "Updating linked post meta..." );
+		$meta_key       = "_" . $linked_post_type . "_export_hash";
+		$this->meta_key = $meta_key;
+
+		$metafield_lowercase = strtolower( $meta_key_to_update );  // In the WPAI $record the meta keys come through as lowercase.
+
+		// Hash the old linked post type ID.
+		$meta_value = $this->hashit( $record[ $metafield_lowercase ] );
+		$this->meta_value = $meta_value;
+
+		// Grab the new post ID based on the hash.
+		$new_linked_post_id       = $this->grab_post_id_based_on_meta();
+		$this->new_linked_post_id = $new_linked_post_id;
+
+		// If there's an ID, update.
+		if ( $new_linked_post_id ) {
+			if ( $multiple ) {
+				return add_post_meta( $post_id, $meta_key_to_update, $new_linked_post_id );
+			} else {
+				return update_post_meta( $post_id, $meta_key_to_update, $new_linked_post_id );
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
