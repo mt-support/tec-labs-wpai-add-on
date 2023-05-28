@@ -690,6 +690,17 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Hashing function.
+	 *
+	 * @param string $subject The subject to be hashed.
+	 *
+	 * @return string The hashed string.
+	 */
+	function hashit( $subject ) {
+		return hash( 'sha256', $subject, false );
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
