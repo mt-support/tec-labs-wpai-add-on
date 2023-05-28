@@ -701,6 +701,26 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Resets the delimiter to the pipe (|) character and creates an array of values.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param mixed $value The delimiter separated meta value.
+	 *
+	 * @return string[]    String or array of meta values.
+	 */
+	private function maybe_explode( mixed $value ) {
+		// Not digits
+		$pattern = '/(\D)/i';
+
+		// Reset the delimiter to pipe (|)
+		$value = preg_replace( $pattern, "|", $value );
+
+		// Explode the list of IDs into an array.
+		return explode( "|", $value );
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
