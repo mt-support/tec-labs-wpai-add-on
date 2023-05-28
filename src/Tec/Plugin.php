@@ -789,6 +789,39 @@ LIMIT 1",
 	}
 
 	/**
+	 * Replace the old post ID with the new post ID in the postmeta table.
+	 *
+	 * @param int   $post_id The post ID for which the meta data needs to be updated.
+	 * @param array $data    Data defining the connections and what needs to be updated.
+	 * @param array $record  The post data.
+	 *
+	 * @return void
+	 */
+	private function replace_ids_in_metavalue( int $post_id, array $data, array $record ) {
+		$old_linked_post_id = $this->old_linked_post_id;
+		$new_linked_post_id = $this->new_linked_post_id;
+
+		// Grab the meta entry, we need the new ID
+		$meta = get_post_meta( $post_id, '_tec_tc_order_items', true );
+
+		// Grab the part with the current ID
+		// Copy the part to the new ID
+		$meta[$new_linked_post_id] = $meta[$old_linked_post_id];
+		$meta[$new_linked_post_id]['ticket_id'] = $new_linked_post_id;
+
+		// Remove the part with the current ID
+		unset( $meta[$old_linked_post_id] );
+
+		// Re-save meta entry
+		$success = update_post_meta( $post_id, '_tec_tc_order_items', $meta );
+
+		// Logging
+		$msg = "Updating IDs in meta value ";
+		$msg .= $success ? "successful" : "NOT successful";
+		$this->add_to_log( $msg );
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
