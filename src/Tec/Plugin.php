@@ -177,6 +177,21 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Add a message to the WP All Import log.
+	 *
+	 * @param $m
+	 *
+	 * @return void
+	 */
+	function add_to_log( $m ) {
+		printf(
+			"<div class='progress-msg tec-labs-migration-add-on'><span style='color: #334aff;'>[%s] TEC - $m</span></div>",
+			date( "H:i:s" )
+		);
+		flush();
+	}
+
+	/**
 	 * Checks whether the plugin dependency manifest is satisfied or not.
 	 *
 	 * @since 1.0.0
