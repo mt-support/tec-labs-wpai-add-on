@@ -144,6 +144,10 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
 		add_filter( 'tec_tickets_commerce_order_post_type_args', [ $this, 'tc_orders_label' ] );
 
+		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
+
+
+
 		// End binds.
 
 		$this->container->register( Hooks::class );
@@ -176,6 +180,25 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		return $args;
 	}
 
+	/**
+	 * Adds '_EventOrigin' to the tracked keys.
+	 * Note: Updating a tracked key triggers the creation or update of the Custom Table entries.
+	 *
+	 * @see   \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $tracked_keys Array of the tracked keys.
+	 *
+	 * @return array
+	 *
+	 */
+	public function modify_tracked_meta_keys( $tracked_keys ) {
+		$tracked_keys[] = '_EventOrigin';
+
+		return $tracked_keys;
+	}
+	
 	/**
 	 * Add a message to the WP All Import log.
 	 *
