@@ -282,6 +282,91 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Check if the related post the current one being imported depends on exists.
+	 *
+	 * @param array  $data        Array of the data being imported.
+	 *
+	 * @return bool
+	 */
+	function check_relation_exists( $data ) {
+		$relations = [
+			'tribe_rsvp_tickets'   => [
+				0 =>[
+					'linked_post_type' => 'tribe_events',
+					'meta_key'         => '_tribe_rsvp_for_event',
+				],
+			],
+			'tribe_rsvp_attendees' => [
+				0 => [
+					'linked_post_type' => 'tribe_events',
+					'meta_key'         => '_tribe_rsvp_event',
+				],
+				1 => [
+					'linked_post_type' => 'tribe_rsvp_tickets',
+					'meta_key'         => '_tribe_rsvp_product',
+				],
+			],
+			'tec_tc_ticket'   => [
+				0 =>[
+					'linked_post_type' => 'tribe_events',
+					'meta_key'         => '_tec_tickets_commerce_event',
+				],
+			],
+			'tec_tc_attendee'   => [
+				0 =>[
+					'linked_post_type' => 'tribe_events',
+					'meta_key'         => '_tec_tickets_commerce_event',
+				],
+				1 =>[
+					'linked_post_type' => 'tec_tc_ticket',
+					'meta_key'         => '_tec_tickets_commerce_ticket',
+				],
+			],
+			'tec_tc_order'   => [
+				0 =>[
+					'linked_post_type' => 'tribe_events',
+					'meta_key'         => '_tec_tc_order_events_in_order',
+				],
+				1 => [
+					'linked_post_type' => 'tec_tc_ticket',
+					'meta_key'         => '_tec_tc_order_tickets_in_order',
+				],
+			],
+		];
+
+		$this->add_to_log( "Checking if linked post exists..." );
+
+		$links = $relations[ $data['posttype'] ];
+		foreach( $links as $link ) {
+			$lpto = get_post_type_object( $link['linked_post_type'] );
+
+			$hash_meta_key = '_' . $link['linked_post_type'] . '_export_hash';
+			// We need to handle an array because Tickets Commerce orders can have multiple tickets.
+			$post_ids      = $this->maybe_explode( $data[ $link['meta_key'] ] );
+			foreach ( $post_ids as $post_id ) {
+				$hash_meta_value = $this->hashit( $post_id );
+				$post_exists     = $this->get_post_id_from_meta( $hash_meta_key, $hash_meta_value );
+
+				if ( ! $post_exists ) {
+					$this->add_to_log(
+					// Translators: 1) Singular label of the related post type. 2) Title of the post being imported.
+						sprintf(
+							'Related `%1$s` post for `%2$s` doesn\'t exist. It will NOT be imported.',
+							$lpto->labels->singular_name,
+							$data['title']
+						)
+					);
+
+					return false;
+				}
+			}
+		}
+		$this->add_to_log( "All linked posts found. Moving forward..." );
+
+		return true;
+	}
+
+	/**
 	 * Do modifications after a post and its post meta have been saved.
 	 *
 	 * @since 0.1.0
