@@ -146,12 +146,63 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
 
-
+		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
 
 		// End binds.
 
 		$this->container->register( Hooks::class );
 		$this->container->register( Assets::class );
+	}
+
+	/**
+	 * Check whether a post needs to be imported or not.
+	 *
+	 * @param bool  $continue_import True to import, false to skip import.
+	 * @param array $data            Array of data to import.
+	 * @param int   $import_id       The ID of the import.
+	 *
+	 * @return bool
+	 */
+	public function maybe_create_post( $continue_import, $data, $import_id ) {
+
+		if (
+			$data['posttype'] == 'tribe_rsvp_tickets'
+			|| $data['posttype'] == 'tribe_rsvp_attendees'
+			|| $data['posttype'] == 'tec_tc_ticket'
+			|| $data['posttype'] == 'tec_tc_order'
+			|| $data['posttype'] == 'tec_tc_attendee'
+		) {
+
+			$msg = "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>";
+			$this->add_to_log( $msg );
+
+			if ( ! $this->check_data_validity( $data ) ) {
+				return false;
+			}
+
+			/**
+			 * Filter to allow forcing the import if the related post doesn't exist.
+			 */
+			if ( apply_filters( 'tec_labs_wpai_force_import_' . $data['posttype'], false, $data, $import_id ) ) {
+				$pto = get_post_type_object( $data['posttype'] );
+				// Get post type label
+				$this->add_to_log(
+				// Translators: 1) Singular label of the post type being imported. 2) Title of the post currently imported.
+					sprintf(
+						'%1$s `%2$s` will be force-imported, despite a non-existent related post.',
+						$pto->labels->singular_name,
+						$data['title'],
+					)
+				);
+
+				return true;
+			}
+
+
+			return $this->check_relation_exists( $data );
+		}
+
+		return true;
 	}
 
 	/**
@@ -198,7 +249,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 		return $tracked_keys;
 	}
-	
+
 	/**
 	 * Add a message to the WP All Import log.
 	 *
