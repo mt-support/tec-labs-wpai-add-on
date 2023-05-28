@@ -208,6 +208,80 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Check if data is valid.
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
+	private function check_data_validity( array $data ) {
+		$this->add_to_log( "Checking if data is valid..." );
+
+		$valid = true;
+
+		/**
+		 * Bail if
+		 * - Link to event missing
+		 */
+		if (
+			$data['posttype'] == 'tec_tc_ticket'
+			&& is_array( $data['_tec_tickets_commerce_event'] )
+			&& empty( $data['_tec_tickets_commerce_event'] )
+		) {
+			$valid = false;
+			$this->add_to_log( "Link to event missing..." );
+		}
+
+		/**
+		 * Bail if
+		 * - Order total value doesn't exist
+		 * - Post status doesn't exist
+		 * - Post status is anything else than "tec-tc-xxx"
+		 */
+		if ( $data['posttype'] == 'tec_tc_order' ) {
+			if (
+				(
+					is_array( $data['_tec_tc_order_total_value'] )
+					&& empty( $data['_tec_tc_order_total_value'] )
+				)
+				|| ! isset( $record['status'] )
+				|| ! str_starts_with( $record['status'], 'tec-tc-' )
+			) {
+				$valid = false;
+				$this->add_to_log( "Data corrupt OR post status missing OR post status incorrect..." );
+			}
+		}
+
+		/**
+		 * Bail if
+		 * - There is no link to the ticket
+		 * - There is no link to the event
+		 */
+		if ( $data['posttype'] == 'tec_tc_attendee' ) {
+			if (
+				(
+					is_array( $data['_tec_tickets_commerce_ticket'] )
+					&& empty( $data['_tec_tickets_commerce_ticket'] )
+				)
+				||
+				(
+					is_array( $data['_tec_tickets_commerce_event'] )
+					&& empty( $data['_tec_tickets_commerce_event'] )
+				)
+			) {
+				$valid = false;
+				$this->add_to_log( "Link to ticket or event missing..." );
+			}
+		}
+
+		if ( ! $valid ) {
+			$this->add_to_log( "Borked data. Skipping." );
+		}
+
+		return $valid;
+	}
+
+	/**
 	 * Do modifications after a post and its post meta have been saved.
 	 *
 	 * @since 0.1.0
