@@ -761,6 +761,34 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Retrieve post ID based on meta key = meta value pair.
+	 *
+	 * @param string $meta_key   The meta key.
+	 * @param string $meta_value The meta value.
+	 *
+	 * @return false|string|null
+	 */
+	function get_post_id_from_meta( $meta_key, $meta_value ) {
+		global $wpdb;
+		$pid = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT `post_id` 
+FROM $wpdb->postmeta 
+WHERE `meta_value` = %s 
+  AND `meta_key` = %s 
+ORDER BY `post_id` 
+LIMIT 1",
+				[ $meta_value, $meta_key ]
+			)
+		);
+		if( $pid != '' ) {
+			return $pid;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
