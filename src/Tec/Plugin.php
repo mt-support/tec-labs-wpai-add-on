@@ -75,6 +75,43 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	private $settings;
 
 	/**
+	 * Stores the meta key name.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	private $meta_key = "";
+
+	/**
+	 * Stores the meta value.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	private $meta_value = "";
+
+	/**
+	 * Stores the old ID of the linked post.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var int
+	 */
+	private $old_linked_post_id;
+
+	/**
+	 * Stores the new ID of the linked post.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var int
+	 */
+	private $new_linked_post_id;
+
+
+	/**
 	 * Setup the Extension's properties.
 	 *
 	 * This always executes even if the required plugins are not present.
