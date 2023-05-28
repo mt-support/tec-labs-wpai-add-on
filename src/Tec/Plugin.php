@@ -822,6 +822,35 @@ LIMIT 1",
 	}
 
 	/**
+	 * Retrieve the post ID from the postmeta table based on a metakey=metavalue pair.
+	 *
+	 * @param wpdb|QM_DB $wpdb
+	 * @param string     $meta_key
+	 * @param string     $meta_value
+	 *
+	 * @return string|null
+	 */
+	private function grab_post_id_based_on_meta(): ?string {
+		global $wpdb;
+		$meta_key = $this->meta_key;
+		$meta_value = $this->meta_value;
+
+		$post_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"
+					SELECT post_id 
+					FROM $wpdb->postmeta 
+					WHERE meta_key=%s 
+					AND meta_value=%s
+				",
+				[ $meta_key, $meta_value ]
+			)
+		);
+
+		return $post_id;
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
