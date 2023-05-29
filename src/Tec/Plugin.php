@@ -148,6 +148,8 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
 
+		add_action( 'pmxi_update_post_meta', [ $this, 'maybe_skip_post_meta' ], 10, 3 );
+
 		add_action( 'pmxi_saved_post', [ $this, 'maybe_update_post' ], 10, 3 );
 
 		// End binds.
@@ -364,6 +366,32 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$this->add_to_log( "All linked posts found. Moving forward..." );
 
 		return true;
+	}
+
+	/**
+	 * Maybe delete meta data with empty values.
+	 *
+	 * @param int    $post_id    The ID of the current post.
+	 * @param string $meta_key   The meta key being imported.
+	 * @param string $meta_value The meta value being imported.
+	 *
+	 * @return void
+	 */
+	public function maybe_skip_post_meta( int $post_id, string $meta_key, string $meta_value ) {
+
+		/**
+		 * Filter to allow keeping empty meta data.
+		 */
+		$delete_empty_meta = apply_filters( 'tec_labs_wpai_delete_empty_meta', true );
+
+		if ( $delete_empty_meta && empty( $meta_value ) ) {
+			if ( delete_post_meta( $post_id, $meta_key ) ) {
+				$this->add_to_log( "Post meta value for " . $meta_key . "was empty and was deleted." );
+			}
+			else {
+				$this->add_to_log( "<span style='color:red;'>Post meta value for " . $meta_key . "was empty BUT post meta could not be deleted.</span>" );
+			}
+		}
 	}
 
 	/**
