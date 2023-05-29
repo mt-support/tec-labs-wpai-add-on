@@ -380,13 +380,24 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 * @return void
 	 */
 	public function maybe_skip_post_meta( int $post_id, string $meta_key, array $meta_value ) {
+		$post_type = get_post_type( $post_id );
 
-		// Bail if it's a post type that we don't care about.
-		if ( ! in_array( get_post_type( $post_id ), $this->get_supported_post_types() ) ) {
+		// Bail (don't delete) if it's a post type that we don't care about.
+		if ( ! in_array( $post_type, $this->get_supported_post_types() ) ) {
 			return;
 		}
 
-		// Bail if we want to keep that empty post meta.
+		/**
+		 * Filter to allow keeping empty meta data.
+		 */
+		$delete_empty_meta = apply_filters( 'tec_labs_wpai_delete_empty_meta', true );
+
+		// Bail if we don't want to delete empty meta data.
+		if ( ! $delete_empty_meta ) {
+			$this->add_to_log( "Keeping empty post meta for all." );
+			return;
+		}
+
 		$keep_post_meta_meta_keys = [];
 
 		/**
@@ -396,18 +407,16 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		 */
 		$keep_post_meta_meta_keys = apply_filters( 'tec_labs_wpai_keep_post_meta_meta_keys', $keep_post_meta_meta_keys );
 
+		// Bail (don't delete) if we want to keep that empty post meta.
 		if ( in_array( $meta_key, (array) $keep_post_meta_meta_keys ) ) {
+			$this->add_to_log( "Keeping empty post meta for `" . $meta_key . "` based on filter." );
 			return;
 		}
 
-		/**
-		 * Filter to allow keeping empty meta data.
-		 */
-		$delete_empty_meta = apply_filters( 'tec_labs_wpai_delete_empty_meta', true );
-
-		if ( $delete_empty_meta && empty( $meta_value ) ) {
+		// If the meta value is empty then delete it.
+		if ( empty( $meta_value ) ) {
 			if ( delete_post_meta( $post_id, $meta_key ) ) {
-				$this->add_to_log( "Post meta value for " . $meta_key . "was empty and was deleted." );
+				$this->add_to_log( "Post meta value for `" . $meta_key . "` was empty and was deleted." );
 			}
 			else {
 				$this->add_to_log( "<span style='color:red;'>Post meta value for " . $meta_key . "was empty BUT post meta could not be deleted.</span>" );
