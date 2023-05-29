@@ -159,7 +159,10 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Check whether a post needs to be imported or not.
+	 * Check whether a post should to be imported or not.
+	 * We only do this for post types that must have a connection.
+	 * - Check for data validity.
+	 * - Check if the connection exists.
 	 *
 	 * @param bool  $continue_import True to import, false to skip import.
 	 * @param array $data            Array of data to import.
@@ -168,7 +171,6 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 * @return bool
 	 */
 	public function maybe_create_post( $continue_import, $data, $import_id ) {
-
 		if (
 			$data['posttype'] == 'tribe_rsvp_tickets'
 			|| $data['posttype'] == 'tribe_rsvp_attendees'
@@ -378,6 +380,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 * @return void
 	 */
 	public function maybe_skip_post_meta( int $post_id, string $meta_key, string $meta_value ) {
+
+		// Bail if it's a post type that we don't care about.
+		if ( ! in_array( get_post_type( $post_id), $this->get_supported_post_types() ) ) {
+			return;
+		}
 
 		/**
 		 * Filter to allow keeping empty meta data.
@@ -881,9 +888,9 @@ LIMIT 1",
 	/**
 	 * Get the post types supported by the extension.
 	 *
-	 * @return array
+	 * @return array The supported post types.
 	 */
-	public function get_supported_post_types() {
+	public function get_supported_post_types(): array {
 		$supported_post_types = [
 			'tribe_events',
 			'tribe_venue',
@@ -897,7 +904,7 @@ LIMIT 1",
 
 		/**
 		 * Allows filtering the supported post types.
-		 * 
+		 *
 		 * @var array $supported_post_types
 		 */
 		return apply_filters( 'tec_labs_wpai_supported_post_types', $supported_post_types );
