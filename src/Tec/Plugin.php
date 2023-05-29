@@ -696,9 +696,13 @@ class Plugin extends \tad_DI52_ServiceProvider {
 			// 4. Resave _tribe_default_ticket_provider for tribe_events
 			// Because WPAI runs wp_unslash()
 			if ( $post_type == 'tribe_events' ) {
-				if ( ! empty( $record['_tribe_default_ticket_provider'] ) ) {
-					update_post_meta( $post_id, '_tribe_default_ticket_provider', $record['_tribe_default_ticket_provider'] );
-					$this->add_to_log( "Ticket provider updated" );
+				if ( ! empty( $record['_tribe_default_ticket_provider'] ) && $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module" ) {
+					//update_post_meta( $post_id, '_tribe_default_ticket_provider', $record['_tribe_default_ticket_provider'] );
+					if ( $this->fix_ticket_provider( $post_id ) ) {
+						$this->add_to_log( "Ticket provider successfully updated." );
+					} else {
+						$this->add_to_log( "Ticket provider update failed.");
+					}
 				}
 			}
 
@@ -844,6 +848,34 @@ LIMIT 1",
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Update the '_tribe_default_ticket_provider'.
+	 * WPAI uses "wp_unslash()" before saving the data.
+	 * This method corrects that.
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool|int|\mysqli_result|resource|null
+	 */
+	function fix_ticket_provider( int $post_id ) {
+		global $wpdb;
+		$success = $wpdb->query(
+			$wpdb->prepare(
+			"UPDATE $wpdb->postmeta
+			SET `meta_value` = %s
+			WHERE `post_id` = %s
+			AND `meta_key` = %s
+			AND `meta_value` = %s",
+			'TEC\Tickets\Commerce\Module',
+			$post_id,
+			'_tribe_default_ticket_provider',
+			'TECTicketsCommerceModule'
+			)
+		);
+
+		return $success;
 	}
 
 	/**
