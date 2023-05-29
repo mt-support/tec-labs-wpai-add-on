@@ -879,6 +879,31 @@ LIMIT 1",
 	}
 
 	/**
+	 * Get the post types supported by the extension.
+	 *
+	 * @return array
+	 */
+	public function get_supported_post_types() {
+		$supported_post_types = [
+			'tribe_events',
+			'tribe_venue',
+			'tribe_organizer',
+			'tribe_rsvp_tickets',
+			'tribe_rsvp_attendees',
+			'tec_tc_ticket',
+			'tec_tc_order',
+			'tec_tc_attendee',
+		];
+
+		/**
+		 * Allows filtering the supported post types.
+		 * 
+		 * @var array $supported_post_types
+		 */
+		return apply_filters( 'tec_labs_wpai_supported_post_types', $supported_post_types );
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
 	 *
 	 * @param array $args Post type arguments.
