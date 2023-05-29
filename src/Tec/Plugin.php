@@ -371,7 +371,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Maybe delete meta data with empty values.
+	 * Maybe delete metadata with empty values.
 	 *
 	 * @param int    $post_id    The ID of the current post.
 	 * @param string $meta_key   The meta key being imported.
@@ -388,11 +388,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		}
 
 		/**
-		 * Filter to allow keeping empty meta data.
+		 * Filter to allow keeping empty metadata.
 		 */
 		$keep_empty_meta = apply_filters( 'tec_labs_wpai_delete_empty_meta', false );
 
-		// Bail if we want to keep empty meta data.
+		// Bail if we want to keep empty metadata.
 		if ( $keep_empty_meta ) {
 			$this->add_to_log( "Keeping empty post meta for all." );
 			return;
@@ -849,7 +849,7 @@ LIMIT 1",
 	/**
 	 * Replace the old post ID with the new post ID in the postmeta table.
 	 *
-	 * @param int   $post_id The post ID for which the meta data needs to be updated.
+	 * @param int   $post_id The post ID for which the metadata needs to be updated.
 	 * @param array $data    Data defining the connections and what needs to be updated.
 	 * @param array $record  The post data.
 	 *
