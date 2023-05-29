@@ -375,11 +375,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @param int    $post_id    The ID of the current post.
 	 * @param string $meta_key   The meta key being imported.
-	 * @param array  $meta_value The meta value being imported.
+	 * @param mixed  $meta_value The meta value being imported.
 	 *
 	 * @return void
 	 */
-	public function maybe_skip_post_meta( int $post_id, string $meta_key, array $meta_value ) {
+	public function maybe_skip_post_meta( int $post_id, string $meta_key, mixed $meta_value ) {
 		$post_type = get_post_type( $post_id );
 
 		// Bail (don't delete) if it's a post type that we don't care about.
@@ -390,10 +390,10 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		/**
 		 * Filter to allow keeping empty meta data.
 		 */
-		$delete_empty_meta = apply_filters( 'tec_labs_wpai_delete_empty_meta', true );
+		$keep_empty_meta = apply_filters( 'tec_labs_wpai_delete_empty_meta', false );
 
-		// Bail if we don't want to delete empty meta data.
-		if ( ! $delete_empty_meta ) {
+		// Bail if we want to keep empty meta data.
+		if ( $keep_empty_meta ) {
 			$this->add_to_log( "Keeping empty post meta for all." );
 			return;
 		}
