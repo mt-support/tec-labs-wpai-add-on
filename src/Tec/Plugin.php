@@ -375,11 +375,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @param int    $post_id    The ID of the current post.
 	 * @param string $meta_key   The meta key being imported.
-	 * @param string $meta_value The meta value being imported.
+	 * @param mixed $meta_value The meta value being imported.
 	 *
 	 * @return void
 	 */
-	public function maybe_skip_post_meta( int $post_id, string $meta_key, string $meta_value ) {
+	public function maybe_skip_post_meta( int $post_id, string $meta_key, mixed $meta_value ) {
 
 		// Bail if it's a post type that we don't care about.
 		if ( ! in_array( get_post_type( $post_id), $this->get_supported_post_types() ) ) {
