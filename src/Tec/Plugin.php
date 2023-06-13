@@ -170,7 +170,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return bool
 	 */
-	public function maybe_create_post( $continue_import, $data, $import_id ) {
+	public function maybe_create_post( bool $continue_import, array $data, int $import_id ): bool {
 		if (
 			$data['posttype'] == 'tribe_rsvp_tickets'
 			|| $data['posttype'] == 'tribe_rsvp_attendees'
@@ -214,11 +214,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	/**
 	 * Check if data is valid.
 	 *
-	 * @param array $data
+	 * @param array $data Array of data to import.
 	 *
 	 * @return bool
 	 */
-	private function check_data_validity( array $data ) {
+	private function check_data_validity( array $data ): bool {
 		$this->add_to_log( "Checking if data is valid..." );
 
 		$valid = true;
@@ -288,11 +288,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	/**
 	 * Check if the related post the current one being imported depends on exists.
 	 *
-	 * @param array  $data        Array of the data being imported.
+	 * @param array $data Array of the data being imported.
 	 *
 	 * @return bool
 	 */
-	function check_relation_exists( $data ) {
+	function check_relation_exists( array $data ): bool {
 		$relations = [
 			'tribe_rsvp_tickets'   => [
 				0 =>[
@@ -379,7 +379,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function maybe_skip_post_meta( int $post_id, string $meta_key, mixed $meta_value ) {
+	public function maybe_skip_post_meta( int $post_id, string $meta_key, mixed $meta_value ): void {
 		$post_type = get_post_type( $post_id );
 
 		// Bail (don't delete) if it's a post type that we don't care about.
@@ -429,14 +429,14 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 0.1.0
 	 *
+	 * @param int   $post_id   The ID of the inserted post.
 	 * @param mixed $xml_node  The post data in XML format.
 	 * @param bool  $is_update Whether it's an update or not.
-	 * @param int   $post_id   The ID of the inserted post.
 	 *
 	 * @return void
 	 *
 	 */
-	function maybe_update_post( $post_id, $xml_node, $is_update ) {
+	function maybe_update_post( int $post_id, mixed $xml_node, bool $is_update ): void {
 		// Convert SimpleXml object to array for easier use.
 		$record = json_decode( json_encode( ( array ) $xml_node ), 1 );
 
@@ -624,7 +624,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return void
 	 */
-	function relink_posts( $data, $post_id, $post_type, $record ) {
+	function relink_posts( array $data, int $post_id, string $post_type, array $record ): void {
 		// Start logging
 		$msg = "<strong>TEC - Starting relinking process...</strong>";
 		$this->add_to_log( $msg );
@@ -758,7 +758,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return string The hashed string.
 	 */
-	function hashit( $subject ) {
+	function hashit( string $subject ): string {
 		return hash( 'sha256', $subject, false );
 	}
 
@@ -771,7 +771,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return string[]    String or array of meta values.
 	 */
-	private function maybe_explode( mixed $value ) {
+	private function maybe_explode( mixed $value ): array {
 		// Not digits
 		$pattern = '/(\D)/i';
 
@@ -796,7 +796,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 * @return int|false                 Meta ID (add) or true (update) on success, false on failure.
 	 *
 	 */
-	private function update_linked_post_meta( $linked_post_type, $meta_key_to_update, $post_id, $record, $multiple = false ) {
+	private function update_linked_post_meta( string $linked_post_type, string $meta_key_to_update, int $post_id, array $record, bool $multiple = false ): bool|int {
 		$this->add_to_log( "Updating linked post meta..." );
 		$meta_key       = "_" . $linked_post_type . "_export_hash";
 		$this->meta_key = $meta_key;
@@ -830,7 +830,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return false|string|null
 	 */
-	function get_post_id_from_meta( $meta_key, $meta_value ) {
+	function get_post_id_from_meta( string $meta_key, string $meta_value ): bool|string|null {
 		global $wpdb;
 		$pid = $wpdb->get_var(
 			$wpdb->prepare(
@@ -887,7 +887,7 @@ LIMIT 1",
 	 *
 	 * @return void
 	 */
-	private function replace_ids_in_metavalue( int $post_id, array $data, array $record ) {
+	private function replace_ids_in_metavalue( int $post_id, array $data, array $record ): void {
 		$old_linked_post_id = $this->old_linked_post_id;
 		$new_linked_post_id = $this->new_linked_post_id;
 
@@ -913,10 +913,6 @@ LIMIT 1",
 
 	/**
 	 * Retrieve the post ID from the postmeta table based on a metakey=metavalue pair.
-	 *
-	 * @param wpdb|QM_DB $wpdb
-	 * @param string     $meta_key
-	 * @param string     $meta_value
 	 *
 	 * @return string|null
 	 */
@@ -972,7 +968,7 @@ LIMIT 1",
 	 *
 	 * @return array
 	 */
-	function tc_attendees_label( $args ) {
+	function tc_attendees_label( array $args ): array {
 		$args['label'] = "Attendees - Tickets Commerce";
 
 		return $args;
@@ -985,7 +981,7 @@ LIMIT 1",
 	 *
 	 * @return array
 	 */
-	function tc_orders_label( $args ) {
+	function tc_orders_label( array $args ): array {
 		$args['label'] = "Orders - Tickets Commerce";
 
 		return $args;
@@ -1004,7 +1000,7 @@ LIMIT 1",
 	 * @return array
 	 *
 	 */
-	public function modify_tracked_meta_keys( $tracked_keys ) {
+	public function modify_tracked_meta_keys( array $tracked_keys ): array {
 		$tracked_keys[] = '_EventOrigin';
 
 		return $tracked_keys;
@@ -1032,7 +1028,7 @@ LIMIT 1",
 	 *
 	 * @return bool Whether the plugin dependency manifest is satisfied or not.
 	 */
-	protected function check_plugin_dependencies() {
+	protected function check_plugin_dependencies(): bool {
 		$this->register_plugin_dependencies();
 
 		return tribe_check_plugin( static::class );
@@ -1043,7 +1039,7 @@ LIMIT 1",
 	 *
 	 * @since 1.0.0
 	 */
-	protected function register_plugin_dependencies() {
+	protected function register_plugin_dependencies(): void {
 		$plugin_register = new Plugin_Register();
 		$plugin_register->register_plugin();
 
@@ -1062,7 +1058,7 @@ LIMIT 1",
 	 *
 	 * TODO: Remove if not using settings
 	 */
-	private function get_options_prefix() {
+	private function get_options_prefix(): string {
 		return (string) str_replace( '-', '_', 'tec-labs-wpai-add-on' );
 	}
 
@@ -1073,7 +1069,7 @@ LIMIT 1",
 	 *
 	 * TODO: Remove if not using settings
 	 */
-	private function get_settings() {
+	private function get_settings(): Settings {
 		if ( empty( $this->settings ) ) {
 			$this->settings = new Settings( $this->get_options_prefix() );
 		}
@@ -1088,7 +1084,7 @@ LIMIT 1",
 	 *
 	 * TODO: Remove if not using settings
 	 */
-	public function get_all_options() {
+	public function get_all_options(): array {
 		$settings = $this->get_settings();
 
 		return $settings->get_all_options();
@@ -1104,7 +1100,7 @@ LIMIT 1",
 	 *
 	 * TODO: Remove if not using settings
 	 */
-	public function get_option( $option, $default = '' ) {
+	public function get_option( $option, $default = '' ): array {
 		$settings = $this->get_settings();
 
 		return $settings->get_option( $option, $default );
