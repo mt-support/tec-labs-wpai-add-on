@@ -701,7 +701,6 @@ class Plugin extends \tad_DI52_ServiceProvider {
 			// Because WPAI runs wp_unslash()
 			if ( $post_type == 'tribe_events' ) {
 				if ( ! empty( $record['_tribe_default_ticket_provider'] ) && $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module" ) {
-					//update_post_meta( $post_id, '_tribe_default_ticket_provider', $record['_tribe_default_ticket_provider'] );
 					if ( $this->fix_ticket_provider( $post_id ) ) {
 						$this->add_to_log( "Ticket provider successfully updated." );
 					} else {
