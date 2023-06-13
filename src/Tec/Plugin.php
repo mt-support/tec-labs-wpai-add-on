@@ -223,6 +223,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$valid = true;
 
 		/**
+		 * For Tickets Commerce ticket:
 		 * Bail if
 		 * - Link to event missing
 		 */
@@ -236,6 +237,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		}
 
 		/**
+		 * For Tickets Commerce Order:
 		 * Bail if
 		 * - Order total value doesn't exist
 		 * - Post status doesn't exist
@@ -256,6 +258,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		}
 
 		/**
+		 * For Tickets Commerce Attendees:
 		 * Bail if
 		 * - There is no link to the ticket
 		 * - There is no link to the event
@@ -629,7 +632,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$msg = "<strong>TEC - Starting relinking process...</strong>";
 		$this->add_to_log( $msg );
 
-		// If title is empty use post ID.
+		// If title is empty use post ID. (Used for log messages only.)
 		$post_title = empty( $record['title'] ) ? "post (ID: " . $post_id . ")" : "`" . $record['title'] . "`";
 
 		// 1. Create and save the hash based on the old post ID.
@@ -677,6 +680,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 							$msg .= "metadata `" . $record_meta_key . "` for " . $post_title . " was ";
 							$msg .= $update_successful ? "successful" : "NOT successful (or linked post doesn't exist)";
 							$this->add_to_log( $msg );
+							// Set to `true` after first.
 							$multiple = true;
 
 							// Update the ticket IDs in the metadata
@@ -693,7 +697,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 				}
 			}
 
-			// 4. Resave _tribe_default_ticket_provider for tribe_events
+			// 4. Re-save _tribe_default_ticket_provider for tribe_events
 			// Because WPAI runs wp_unslash()
 			if ( $post_type == 'tribe_events' ) {
 				if ( ! empty( $record['_tribe_default_ticket_provider'] ) && $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module" ) {
@@ -962,7 +966,7 @@ LIMIT 1",
 	}
 
 	/**
-	 * Adjust the label for Tickets Commerce Attendees to reflect vendor.
+	 * Adjust the label for Tickets Commerce Attendees to reflect eCommerce provider.
 	 *
 	 * @param array $args Post type arguments.
 	 *
@@ -975,7 +979,7 @@ LIMIT 1",
 	}
 
 	/**
-	 * Adjust the label for Tickets Commerce Orders to reflect vendor.
+	 * Adjust the label for Tickets Commerce Orders to reflect eCommerce provider.
 	 *
 	 * @param array $args Post type arguments.
 	 *
