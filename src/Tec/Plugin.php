@@ -179,8 +179,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 			|| $data['posttype'] == 'tec_tc_attendee'
 		) {
 
-			$msg = "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>";
-			$this->add_to_log( $msg );
+			$this->add_to_log( "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>" );
 
 			if ( ! $this->check_data_validity( $data ) ) {
 				return false;
@@ -195,7 +194,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 				$this->add_to_log(
 				// Translators: 1) Singular label of the post type being imported. 2) Title of the post currently imported.
 					sprintf(
-						'%1$s `%2$s` will be force-imported, despite a non-existent related post.',
+						'%1$s `%2$s` will be force-imported, even if a related post doesn\'t exist.',
 						$pto->labels->singular_name,
 						$data['title'],
 					)
@@ -446,14 +445,15 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		// Check if the post type after the import is still the same.
 		// TODO: Should we delete the imported
 		if ( $post_type != $record['posttype'] ) {
-			$this->add_to_log( "<span style='color:red;'><strong>POST TYPES DON'T MATCH!!!</strong></span> Original post type: `" . $record['posttype'] . "`. Post type after import: `" . $post_type . "`. Imported post will be deleted." );
-
+			$this->add_to_log( "<span style='color:red;'><strong>POST TYPES DON'T MATCH!!!</strong></span> Original post type: `" . $record['posttype'] . "`. Post type after import: `" . $post_type . "`." );
 			/**
 			 * Filter to allow keeping a post even if the new post type doesn't match the original one.
 			 */
 			if ( apply_filters( 'tec_labs_wpai_delete_mismatching_post_type', true ) ) {
 				wp_delete_post( $post_id, true );
-				$this->add_to_log( "Post (ID: " . $post_id . ") deleted" );
+				$this->add_to_log( "Post (ID: " . $post_id . ") deleted." );
+			} else {
+				$this->add_to_log( "Post (ID: " . $post_id . ") will be imported based on filter." );
 			}
 		}
 
@@ -1009,13 +1009,13 @@ LIMIT 1",
 	/**
 	 * Add a message to the WP All Import log.
 	 *
-	 * @param $m
+	 * @param string $message The message to be added to the log.
 	 *
 	 * @return void
 	 */
-	function add_to_log( $m ) {
+	function add_to_log( string $message ): void {
 		printf(
-			"<div class='progress-msg tec-labs-migration-add-on'><span style='color: #334aff;'>[%s] TEC - $m</span></div>",
+			"<div class='progress-msg tec-labs-migration-add-on'><span style='color: #334aff;'>[%s] TEC - $message</span></div>",
 			date( "H:i:s" )
 		);
 		flush();
