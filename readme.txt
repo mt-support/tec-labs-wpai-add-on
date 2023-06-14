@@ -3,19 +3,19 @@ Contributors: theeventscalendar
 Donate link: https://evnt.is/29
 Tags: events, calendar
 Requires at least: 4.9
-Tested up to: 5.7
-Requires PHP: 5.6
+Tested up to: 6.2.2
+Requires PHP: 8.0
 Stable tag: 1.0.0
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-WP All Import add-on for The Events Calendar
+WP All Import add-on for The Events Calendar.
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+WP All Import add-on for The Events Calendar. It can handle Events, Venues, and multiple Organizers, RSVPs, RSVP Attendees, Tickets Commerce Tickets, Tickets Commerce Attendees, and Tickets Commerce Orders.
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and Markdown parsed.
+The following are NOT supported: Series, Recurring Events, WooCommerce Tickets, WooCommerce Orders, WooCommerce Attendees.
 
 == Installation ==
 
