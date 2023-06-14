@@ -137,7 +137,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 		// Do the settings.
 		// TODO: Remove if not using settings
-		$this->get_settings();
+		//$this->get_settings();
 
 		// Start binds.
 
