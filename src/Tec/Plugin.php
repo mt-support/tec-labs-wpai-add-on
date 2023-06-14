@@ -429,7 +429,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	/**
 	 * Do modifications after a post and its post meta have been saved.
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param int   $post_id   The ID of the inserted post.
 	 * @param mixed $xml_node  The post data in XML format.
@@ -768,7 +768,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	/**
 	 * Resets the delimiter to the pipe (|) character and creates an array of values.
 	 *
-	 * @since 0.2.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed $value The delimiter separated meta value.
 	 *
@@ -788,7 +788,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	/**
 	 * Update the meta field based on the found hash
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $linked_post_type   The connected post type.
 	 * @param string $meta_key_to_update The meta field that needs to be updated.
@@ -996,7 +996,7 @@ LIMIT 1",
 	 *
 	 * @see   \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
 	 *
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 *
 	 * @param array $tracked_keys Array of the tracked keys.
 	 *
