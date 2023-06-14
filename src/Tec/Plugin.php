@@ -49,21 +49,21 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @var string Plugin Directory.
 	 */
-	public $plugin_dir;
+	public string $plugin_dir;
 
 	/**
 	 * @since 1.0.0
 	 *
 	 * @var string Plugin path.
 	 */
-	public $plugin_path;
+	public string $plugin_path;
 
 	/**
 	 * @since 1.0.0
 	 *
 	 * @var string Plugin URL.
 	 */
-	public $plugin_url;
+	public string $plugin_url;
 
 	/**
 	 * @since 1.0.0
@@ -72,7 +72,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * TODO: Remove if not using settings
 	 */
-	private $settings;
+	private Settings $settings;
 
 	/**
 	 * Stores the meta key name.
@@ -81,7 +81,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @var string
 	 */
-	private $meta_key = "";
+	private string $meta_key = "";
 
 	/**
 	 * Stores the meta value.
@@ -90,7 +90,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @var string
 	 */
-	private $meta_value = "";
+	private string $meta_value = "";
 
 	/**
 	 * Stores the old ID of the linked post.
@@ -99,7 +99,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @var int
 	 */
-	private $old_linked_post_id;
+	private int $old_linked_post_id;
 
 	/**
 	 * Stores the new ID of the linked post.
@@ -108,7 +108,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @var int
 	 */
-	private $new_linked_post_id;
+	private int $new_linked_post_id;
 
 
 	/**
@@ -118,7 +118,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 1.0.0
 	 */
-	public function register() {
+	public function register(): void {
 		// Set up the plugin provider properties.
 		$this->plugin_path = trailingslashit( dirname( static::FILE ) );
 		$this->plugin_dir  = trailingslashit( basename( $this->plugin_path ) );
@@ -410,7 +410,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$keep_post_meta_meta_keys = apply_filters( 'tec_labs_wpai_keep_post_meta_meta_keys', $keep_post_meta_meta_keys );
 
 		// Bail (don't delete) if we want to keep that empty post meta.
-		if ( in_array( $meta_key, (array) $keep_post_meta_meta_keys ) ) {
+		if ( in_array( $meta_key, $keep_post_meta_meta_keys ) ) {
 			$this->add_to_log( "Keeping empty post meta for `" . $meta_key . "` based on filter." );
 			return;
 		}
@@ -1096,14 +1096,14 @@ LIMIT 1",
 	/**
 	 * Get a specific extension option.
 	 *
-	 * @param $option
-	 * @param string $default
+	 * @param string $option  The option name.
+	 * @param string $default The default option value.
 	 *
 	 * @return array
 	 *
 	 * TODO: Remove if not using settings
 	 */
-	public function get_option( $option, $default = '' ): array {
+	public function get_option( string $option, string $default = '' ): array {
 		$settings = $this->get_settings();
 
 		return $settings->get_option( $option, $default );
