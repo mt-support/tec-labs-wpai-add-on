@@ -112,7 +112,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 
 	/**
-	 * Setup the Extension's properties.
+	 * Set up the Extension's properties.
 	 *
 	 * This always executes even if the required plugins are not present.
 	 *
@@ -614,7 +614,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 			0 => [
 		        'multiple'            => false,
 				'record_meta_key'     => '_tec_tc_order_events_in_order',
-				'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different than record_meta_key
+				'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different from record_meta_key
 				'linked_post_type'    => 'tribe_events',
 			],
 		],
