@@ -358,6 +358,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 			$hash_meta_key = '_' . $link['linked_post_type'] . '_export_hash';
 
+			// Check if meta key exists.
 			if ( ! isset ( $data[ $link['meta_key'] ] ) ) {
 				$this->add_to_log(
 					// Translators: 1) Title of the post being imported.
@@ -366,6 +367,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 						$data['title']
 					)
 				);
+				
 				return false;
 			}
 
