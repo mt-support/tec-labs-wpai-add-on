@@ -861,11 +861,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$pid = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT `post_id` 
-FROM $wpdb->postmeta 
-WHERE `meta_value` = %s 
-  AND `meta_key` = %s 
-ORDER BY `post_id` 
-LIMIT 1",
+			FROM $wpdb->postmeta 
+			WHERE `meta_value` = %s 
+			AND `meta_key` = %s 
+			ORDER BY `post_id` 
+			LIMIT 1",
 				[ $meta_value, $meta_key ]
 			)
 		);
@@ -889,10 +889,10 @@ LIMIT 1",
 		global $wpdb;
 		$success = $wpdb->query(
 			$wpdb->prepare(
-			"UPDATE $wpdb->postmeta
-			SET `meta_value` = %s
-			WHERE `post_id` = %s
-			AND `meta_key` = %s
+			"UPDATE $wpdb->postmeta 
+			SET `meta_value` = %s 
+			WHERE `post_id` = %s 
+			AND `meta_key` = %s 
 			AND `meta_value` = %s",
 			'TEC\Tickets\Commerce\Module',
 			$post_id,
