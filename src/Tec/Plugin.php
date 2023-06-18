@@ -461,7 +461,6 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 * @param bool  $is_update Whether it's an update or not.
 	 *
 	 * @return void
-	 *
 	 */
 	function maybe_update_post( int $post_id, mixed $xml_node, bool $is_update ): void {
 		// Convert SimpleXml object to array for easier use.
@@ -471,7 +470,6 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$post_type = get_post_type( $post_id );
 
 		// Check if the post type after the import is still the same.
-		// TODO: Should we delete the imported
 		if ( $post_type != $record['posttype'] ) {
 			$this->add_to_log( "<span style='color:red;'><strong>POST TYPES DON'T MATCH!!!</strong></span> Original post type: `" . $record['posttype'] . "`. Post type after import: `" . $post_type . "`." );
 			/**
@@ -486,7 +484,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		}
 
 		// Update origin for Venues.
-		if ( $post_type == 'tribe_venue' ) {
+		if ( $post_type === 'tribe_venue' ) {
 			$data = [
 				'create_hash'     => true,
 				'origin_meta_key' => '_VenueOrigin',
@@ -494,14 +492,14 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		}
 
 		// Update origin for Organizers.
-		if ( $post_type == 'tribe_organizer' ) {
+		if ( $post_type === 'tribe_organizer' ) {
 			$data = [
 				'create_hash'     => true,
 				'origin_meta_key' => '_OrganizerOrigin',
 			];
 		}
 
-		if ( $post_type == 'tribe_events' ) {
+		if ( $post_type === 'tribe_events' ) {
 			$data                  = [
 				'create_hash'     => true,
 				'origin_meta_key' => '_EventOrigin',
@@ -525,7 +523,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		/**
 		 * RSVP tickets
 		 */
-		if ( $post_type == 'tribe_rsvp_tickets' ) {
+		if ( $post_type === 'tribe_rsvp_tickets' ) {
 			$data                  = [
 				'create_hash'     => true,
 				'origin_meta_key' => '_RsvpOrigin',
@@ -542,7 +540,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		/**
 		 * Attendees for RSVPs
 		 */
-		if ( $post_type == 'tribe_rsvp_attendees' ) {
+		if ( $post_type === 'tribe_rsvp_attendees' ) {
 			$data                  = [
 				'create_hash'     => false,
 				'origin_meta_key' => '_RsvpAttendeeOrigin',
@@ -564,7 +562,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		/**
 		 * Tickets with Tickets Commerce (Stripe)
 		 */
-		if ( $post_type == 'tec_tc_ticket' ) {
+		if ( $post_type === 'tec_tc_ticket' ) {
 			$data                  = [
 				'create_hash'     => true,
 				'origin_meta_key' => '_TcTicketOrigin',
@@ -581,7 +579,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		/**
 		 * Orders with Tickets Commerce (Stripe)
 		 */
-		if ( $post_type == 'tec_tc_order' ) {
+		if ( $post_type === 'tec_tc_order' ) {
 			$data                  = [
 				'create_hash'     => true,
 				'origin_meta_key' => '_TCOrderOrigin',
@@ -603,7 +601,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		/**
 		 * Attendees for Tickets Commerce (Stripe)
 		 */
-		if ( $post_type == 'tec_tc_attendee' ) {
+		if ( $post_type === 'tec_tc_attendee' ) {
 			$data                  = [
 				'create_hash'     => false,
 				'origin_meta_key' => '_TcAttendeeOrigin',
