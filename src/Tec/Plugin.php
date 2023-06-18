@@ -942,13 +942,13 @@ LIMIT 1",
 	/**
 	 * Get the post types supported by the extension.
 	 *
+	 * @param bool $with_connection Whether it is only the post types that require a connection (true) or all post types (false).
+	 *
 	 * @return array The supported post types.
 	 */
-	public function get_supported_post_types(): array {
+	public function get_supported_post_types( bool $with_connection = true ): array {
+		// Post types that need a connection.
 		$supported_post_types = [
-			'tribe_events',
-			'tribe_venue',
-			'tribe_organizer',
 			'tribe_rsvp_tickets',
 			'tribe_rsvp_attendees',
 			'tec_tc_ticket',
@@ -956,12 +956,23 @@ LIMIT 1",
 			'tec_tc_attendee',
 		];
 
+		// Post types that don't require a connection.
+		if ( ! $with_connection ) {
+			array_unshift(
+				$supported_post_types,
+				'tribe_events',
+				'tribe_venue',
+				'tribe_organizer'
+			);
+		}
+
 		/**
 		 * Allows filtering the supported post types.
 		 *
-		 * @var array $supported_post_types
+		 * @var array $supported_post_types Array of the supported post types
+		 * @var bool  $with_connection      Whether it is only the post types that require a connection (true) or all post types (false).
 		 */
-		return apply_filters( 'tec_labs_wpai_supported_post_types', $supported_post_types );
+		return apply_filters( 'tec_labs_wpai_supported_post_types', $supported_post_types, $with_connection );
 	}
 
 	/**
