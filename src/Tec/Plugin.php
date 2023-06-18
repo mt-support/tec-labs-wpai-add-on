@@ -216,6 +216,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Check if data is valid.
+	 * Note: at this point $data['posttype'] exists.
 	 *
 	 * @param array $data Array of data to import.
 	 *
@@ -232,7 +233,8 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		 * - Link to event missing
 		 */
 		if (
-			$data['posttype'] == 'tec_tc_ticket'
+			$data['posttype'] === 'tec_tc_ticket'
+			&& isset( $data['_tec_tickets_commerce_event'] )
 			&& is_array( $data['_tec_tickets_commerce_event'] )
 			&& empty( $data['_tec_tickets_commerce_event'] )
 		) {
@@ -247,10 +249,11 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		 * - Post status doesn't exist
 		 * - Post status is anything else than "tec-tc-xxx"
 		 */
-		if ( $data['posttype'] == 'tec_tc_order' ) {
+		if ( $data['posttype'] === 'tec_tc_order' ) {
 			if (
 				(
-					is_array( $data['_tec_tc_order_total_value'] )
+					isset( $data['_tec_tc_order_total_value'] )
+					&& is_array( $data['_tec_tc_order_total_value'] )
 					&& empty( $data['_tec_tc_order_total_value'] )
 				)
 				|| ! isset( $record['status'] )
@@ -270,12 +273,14 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		if ( $data['posttype'] == 'tec_tc_attendee' ) {
 			if (
 				(
-					is_array( $data['_tec_tickets_commerce_ticket'] )
+					isset( $data['_tec_tickets_commerce_ticket'] )
+					&& is_array( $data['_tec_tickets_commerce_ticket'] )
 					&& empty( $data['_tec_tickets_commerce_ticket'] )
 				)
 				||
 				(
-					is_array( $data['_tec_tickets_commerce_event'] )
+					isset( $data['_tec_tickets_commerce_event'] )
+					&& is_array( $data['_tec_tickets_commerce_event'] )
 					&& empty( $data['_tec_tickets_commerce_event'] )
 				)
 			) {
@@ -293,6 +298,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Check if the related post the current one being imported depends on exists.
+	 * Note: at this point $data['posttype'] exists.
 	 *
 	 * @param array $data Array of the data being imported.
 	 *
