@@ -175,7 +175,10 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$this->add_to_log( "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>" );
 
 		// Bail if it's not a supported post type.
-		if ( ! in_array( $data['posttype'], $this->get_supported_post_types(), true ) ) {
+		if (
+			! isset( $data['posttype'] )
+			|| ! in_array( $data['posttype'], $this->get_supported_post_types(), true )
+		) {
 			$this->add_to_log( "Not supported post type. Skipping.");
 			return false;
 		}
