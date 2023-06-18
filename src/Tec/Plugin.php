@@ -175,7 +175,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$this->add_to_log( "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>" );
 
 		// Bail if it's not a supported post type.
-		if ( ! in_array( $data['posttype'], $this->get_supported_post_types() ) ) {
+		if ( ! in_array( $data['posttype'], $this->get_supported_post_types(), true ) ) {
 			$this->add_to_log( "Not supported post type. Skipping.");
 			return false;
 		}
@@ -386,7 +386,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$post_type = get_post_type( $post_id );
 
 		// Bail (don't delete) if it's a post type that we don't care about.
-		if ( ! in_array( $post_type, $this->get_supported_post_types( false ) ) ) {
+		if ( ! in_array( $post_type, $this->get_supported_post_types( false ), true ) ) {
 			return;
 		}
 
@@ -411,7 +411,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$keep_post_meta_meta_keys = apply_filters( 'tec_labs_wpai_keep_post_meta_meta_keys', $keep_post_meta_meta_keys );
 
 		// Bail (don't delete) if we want to keep that empty post meta.
-		if ( in_array( $meta_key, $keep_post_meta_meta_keys ) ) {
+		if ( in_array( $meta_key, $keep_post_meta_meta_keys, true ) ) {
 			$this->add_to_log( "Keeping empty post meta for `" . $meta_key . "` based on filter." );
 			return;
 		}
