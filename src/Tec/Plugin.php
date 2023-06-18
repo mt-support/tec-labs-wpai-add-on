@@ -367,7 +367,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 						$data['title']
 					)
 				);
-				
+
 				return false;
 			}
 
@@ -416,7 +416,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		/**
 		 * Filter to allow keeping empty metadata.
 		 */
-		$keep_empty_meta = apply_filters( 'tec_labs_wpai_delete_empty_meta', false );
+		$keep_empty_meta = apply_filters( 'tec_labs_wpai_keep_empty_meta', false );
 
 		// Bail if we want to keep empty metadata.
 		if ( $keep_empty_meta ) {
