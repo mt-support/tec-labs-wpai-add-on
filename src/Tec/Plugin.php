@@ -424,6 +424,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 			return;
 		}
 
+		// An array of meta keys that should be preserved even with empty values.
 		$keep_post_meta_meta_keys = [];
 
 		/**
