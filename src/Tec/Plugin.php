@@ -385,7 +385,7 @@ class Plugin extends \tad_DI52_ServiceProvider {
 		$post_type = get_post_type( $post_id );
 
 		// Bail (don't delete) if it's a post type that we don't care about.
-		if ( ! in_array( $post_type, $this->get_supported_post_types() ) ) {
+		if ( ! in_array( $post_type, $this->get_supported_post_types( false ) ) ) {
 			return;
 		}
 
