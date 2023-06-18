@@ -357,6 +357,18 @@ class Plugin extends \tad_DI52_ServiceProvider {
 			$lpto = get_post_type_object( $link['linked_post_type'] );
 
 			$hash_meta_key = '_' . $link['linked_post_type'] . '_export_hash';
+
+			if ( ! isset ( $data[ $link['meta_key'] ] ) ) {
+				$this->add_to_log(
+					// Translators: 1) Title of the post being imported.
+					sprintf(
+						"The required meta_key does not exist. %s will NOT be imported.",
+						$data['title']
+					)
+				);
+				return false;
+			}
+
 			// We need to handle an array because Tickets Commerce orders can have multiple tickets.
 			$post_ids      = $this->maybe_explode( $data[ $link['meta_key'] ] );
 			foreach ( $post_ids as $post_id ) {
