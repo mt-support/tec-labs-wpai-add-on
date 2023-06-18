@@ -171,43 +171,44 @@ class Plugin extends \tad_DI52_ServiceProvider {
 	 * @return bool
 	 */
 	public function maybe_create_post( bool $continue_import, array $data, int $import_id ): bool {
-		if (
-			$data['posttype'] == 'tribe_rsvp_tickets'
-			|| $data['posttype'] == 'tribe_rsvp_attendees'
-			|| $data['posttype'] == 'tec_tc_ticket'
-			|| $data['posttype'] == 'tec_tc_order'
-			|| $data['posttype'] == 'tec_tc_attendee'
-		) {
 
-			$this->add_to_log( "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>" );
+		$this->add_to_log( "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>" );
 
-			if ( ! $this->check_data_validity( $data ) ) {
-				return false;
-			}
-
-			/**
-			 * Filter to allow forcing the import if the related post doesn't exist.
-			 */
-			if ( apply_filters( 'tec_labs_wpai_force_import_' . $data['posttype'], false, $data, $import_id ) ) {
-				$pto = get_post_type_object( $data['posttype'] );
-				// Get post type label
-				$this->add_to_log(
-				// Translators: 1) Singular label of the post type being imported. 2) Title of the post currently imported.
-					sprintf(
-						'%1$s `%2$s` will be force-imported, even if a related post doesn\'t exist.',
-						$pto->labels->singular_name,
-						$data['title'],
-					)
-				);
-
-				return true;
-			}
-
-
-			return $this->check_relation_exists( $data );
+		// Bail if it's not a supported post type.
+		if ( ! in_array( $data['posttype'], $this->get_supported_post_types() ) ) {
+			$this->add_to_log( "Not supported post type. Skipping.");
+			return false;
 		}
 
-		return true;
+		// Bail if data is not valid.
+		if ( ! $this->check_data_validity( $data ) ) {
+			return false;
+		}
+
+		/**
+		 * Filter to allow forcing the import if the related post doesn't exist.
+		 *
+		 * @var array $data      Array of data to import.
+		 * @var int   $import_id The ID of the import
+		 */
+		if ( apply_filters( 'tec_labs_wpai_force_import_' . $data['posttype'], false, $data, $import_id ) ) {
+			$pto = get_post_type_object( $data['posttype'] );
+			// Get post type label
+			$this->add_to_log(
+			// Translators: 1) Singular label of the post type being imported. 2) Title of the post currently imported.
+				sprintf(
+					'%1$s `%2$s` will be force-imported, even if a related post doesn\'t exist.',
+					$pto->labels->singular_name,
+					$data['title'],
+				)
+			);
+
+			return true;
+		}
+
+		// Check if relation exists and proceed accordingly.
+		return $this->check_relation_exists( $data );
+
 	}
 
 	/**
