@@ -37,6 +37,10 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
-= [1.0.0] YYYY-MM-DD =
+= [1.1.0] 2023-06-23 =
+
+* Fix - Update to use the new Service_Provider contract in common.
+
+= [1.0.0] 2023-05-28 =
 
 * Initial release
