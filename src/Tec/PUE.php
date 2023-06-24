@@ -2,28 +2,29 @@
 /**
  * Handles the update functionality of the plugin.
  *
- * @since __TRIBE_VERSION__
+ * @since 0.1.1
  *
- * @package Tribe\Extensions\__TRIBE_NAMESPACE__;
+ * @package Tribe\Extensions\WPAI;
  */
 
-namespace Tribe\Extensions\__TRIBE_NAMESPACE__;
+namespace Tribe\Extensions\WPAI;
 
+use TEC\Common\Contracts\Service_Provider;
 use Tribe__PUE__Checker;
 
 /**
  * Class PUE.
  *
- * @since __TRIBE_VERSION__
+ * @since 0.1.1
  *
- * @package Tribe\Extensions\__TRIBE_NAMESPACE__;
+ * @package Tribe\Extensions\WPAI;
  */
-class PUE extends \tad_DI52_ServiceProvider {
+class PUE extends Service_Provider {
 
 	/**
 	 * The slug used for PUE.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 *
 	 * @var string
 	 */
@@ -32,7 +33,7 @@ class PUE extends \tad_DI52_ServiceProvider {
 	/**
 	 * Whether to load PUE or not.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 *
 	 * @var string
 	 */
@@ -41,7 +42,7 @@ class PUE extends \tad_DI52_ServiceProvider {
 	/**
 	 * Plugin update URL.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 *
 	 * @var string
 	 */
@@ -50,7 +51,7 @@ class PUE extends \tad_DI52_ServiceProvider {
 	/**
 	 * The PUE checker instance.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 *
 	 * @var Tribe__PUE__Checker
 	 */
@@ -59,11 +60,11 @@ class PUE extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the filters required by the Plugin Update Engine.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'extension.__TRIBE_SLUG_CLEAN__.pue', $this );
+		$this->container->singleton( 'extension.wpai.pue', $this );
 
 		// Bail to avoid notice.
 		if ( ! static:: $is_active ) {
@@ -79,13 +80,13 @@ class PUE extends \tad_DI52_ServiceProvider {
 	 * If the PUE Checker class exists, go ahead and create a new instance to handle
 	 * update checks for this plugin.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 */
 	public function load_plugin_update_engine() {
 		/**
 		 * Filters whether Extension exists on PUE component should manage the plugin updates or not.
 		 *
-		 * @since __TRIBE_VERSION__
+		 * @since 0.1.1
 		 *
 		 * @param bool   $pue_enabled Whether PUE component should manage the plugin updates or not.
 		 * @param string $pue_slug    The plugin slug used to register it in the Plugin Update Engine.
@@ -107,7 +108,7 @@ class PUE extends \tad_DI52_ServiceProvider {
 	/**
 	 * Get the PUE slug for this plugin.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 *
 	 * @return string PUE slug.
 	 */
@@ -118,7 +119,7 @@ class PUE extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the removal of PUE-related options when the plugin is uninstalled.
 	 *
-	 * @since __TRIBE_VERSION__
+	 * @since 0.1.1
 	 */
 	public static function uninstall() {
 		$slug = str_replace( '-', '_', static::get_slug() );
