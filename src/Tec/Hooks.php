@@ -23,6 +23,7 @@ namespace Tribe\Extensions\WPAI;
 
 use TEC\Common\Contracts\Service_Provider;
 use Tribe__Main as Common;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Hooks.

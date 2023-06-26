@@ -11,6 +11,7 @@ namespace Tribe\Extensions\WPAI;
 
 use TEC\Common\Contracts\Service_Provider;
 use Tribe__PUE__Checker;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class PUE.

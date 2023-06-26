@@ -11,6 +11,8 @@ namespace Tribe\Extensions\WPAI;
 
 use TEC\Common\Contracts\Service_Provider;
 
+use TEC\Common\Contracts\Service_Provider;
+
 /**
  * Class Plugin
  *
