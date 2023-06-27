@@ -9,6 +9,8 @@
 
 namespace Tribe\Extensions\WpaiAddOn;
 
+use TEC\Common\Contracts\Service_Provider;
+
 /**
  * Class Plugin
  *
@@ -16,7 +18,7 @@ namespace Tribe\Extensions\WpaiAddOn;
  *
  * @package Tribe\Extensions\WpaiAddOn
  */
-class Plugin extends \tad_DI52_ServiceProvider {
+class Plugin extends Service_Provider {
 	/**
 	 * Stores the version for the plugin.
 	 *

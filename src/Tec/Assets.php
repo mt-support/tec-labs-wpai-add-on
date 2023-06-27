@@ -15,6 +15,9 @@
 
 namespace Tribe\Extensions\WpaiAddOn;
 
+use TEC\Common\Contracts\Service_Provider;
+
+use TEC\Common\Contracts\Service_Provider;
 /**
  * Register Assets.
  *
@@ -22,7 +25,7 @@ namespace Tribe\Extensions\WpaiAddOn;
  *
  * @package Tribe\Extensions\WpaiAddOn
  */
-class Assets extends \tad_DI52_ServiceProvider {
+class Assets extends Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
@@ -31,7 +34,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'extension.wpai_add_on.assets', $this );
-
 		$plugin = tribe( Plugin::class );
 
 	}
