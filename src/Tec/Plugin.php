@@ -350,48 +350,68 @@ class Plugin extends Service_Provider {
 			],
 		];
 
-		$this->add_to_log( "Checking if linked post exists..." );
+		$this->add_to_log( "Checking if linked posts exist..." );
 
 		$links = $relations[ $data['posttype'] ];
 		foreach( $links as $link ) {
-			$lpto = get_post_type_object( $link['linked_post_type'] );
+			// Stop immediately if there is an issue. Otherwise keep cycling.
+			if ( ! $this->check_link( $link, $data ) ) {
+				return false;
+			}
+		}
 
-			$hash_meta_key = '_' . $link['linked_post_type'] . '_export_hash';
+		// Go ahead if there are no issues.
+		$this->add_to_log( "All linked posts found. Moving forward..." );
+		return true;
+	}
 
-			// Check if meta key exists.
-			if ( ! isset ( $data[ $link['meta_key'] ] ) ) {
+	/**
+	 * Check if the linked post entry exists.
+	 *
+	 * @param array $link Array of data of the linked post type.
+	 *                    'linked_post_type': the post type
+	 *                    'meta_key': the meta key used to connect the two post types.
+	 * @param array $data Array of the data being imported.
+	 *
+	 * @return bool
+	 */
+	public function check_link( array $link, array $data ): bool {
+		$lpto = get_post_type_object( $link['linked_post_type'] );
+
+		$hash_meta_key = '_' . $link['linked_post_type'] . '_export_hash';
+
+		// Check if meta key exists.
+		if ( ! isset ( $data[ $link['meta_key'] ] ) ) {
+			$this->add_to_log(
+			// Translators: 1) Title of the post being imported.
+				sprintf(
+					"The required meta_key does not exist. %s will NOT be imported.",
+					$data['title']
+				)
+			);
+
+			return false;
+		}
+
+		// We need to handle an array because Tickets Commerce orders can have multiple tickets.
+		$post_ids = $this->maybe_explode( $data[ $link['meta_key'] ] );
+		foreach ( $post_ids as $post_id ) {
+			$hash_meta_value = $this->hashit( $post_id );
+			$post_exists     = $this->get_post_id_from_meta( $hash_meta_key, $hash_meta_value );
+
+			if ( ! $post_exists ) {
 				$this->add_to_log(
-					// Translators: 1) Title of the post being imported.
+				// Translators: 1) Singular label of the related post type. 2) Title of the post being imported.
 					sprintf(
-						"The required meta_key does not exist. %s will NOT be imported.",
+						'Related `%1$s` post for `%2$s` doesn\'t exist. It will NOT be imported.',
+						$lpto->labels->singular_name,
 						$data['title']
 					)
 				);
 
 				return false;
 			}
-
-			// We need to handle an array because Tickets Commerce orders can have multiple tickets.
-			$post_ids      = $this->maybe_explode( $data[ $link['meta_key'] ] );
-			foreach ( $post_ids as $post_id ) {
-				$hash_meta_value = $this->hashit( $post_id );
-				$post_exists     = $this->get_post_id_from_meta( $hash_meta_key, $hash_meta_value );
-
-				if ( ! $post_exists ) {
-					$this->add_to_log(
-					// Translators: 1) Singular label of the related post type. 2) Title of the post being imported.
-						sprintf(
-							'Related `%1$s` post for `%2$s` doesn\'t exist. It will NOT be imported.',
-							$lpto->labels->singular_name,
-							$data['title']
-						)
-					);
-
-					return false;
-				}
-			}
 		}
-		$this->add_to_log( "All linked posts found. Moving forward..." );
 
 		return true;
 	}
