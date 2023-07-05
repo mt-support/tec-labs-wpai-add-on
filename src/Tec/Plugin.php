@@ -225,8 +225,6 @@ class Plugin extends Service_Provider {
 	private function check_data_validity( array $data ): bool {
 		$this->add_to_log( "Checking if data is valid..." );
 
-		$valid = true;
-
 		/**
 		 * For Tickets Commerce ticket:
 		 * Bail if
@@ -238,8 +236,10 @@ class Plugin extends Service_Provider {
 			&& is_array( $data['_tec_tickets_commerce_event'] )
 			&& empty( $data['_tec_tickets_commerce_event'] )
 		) {
-			$valid = false;
+			$this->add_to_log( "Corrupt data." );
 			$this->add_to_log( "Link to event missing..." );
+			$this->add_to_log( "Skipping record." );
+			return false;
 		}
 
 		/**
@@ -259,8 +259,10 @@ class Plugin extends Service_Provider {
 				|| ! isset( $record['status'] )
 				|| ! str_starts_with( $record['status'], 'tec-tc-' )
 			) {
-				$valid = false;
+				$this->add_to_log( "Corrupt data." );
 				$this->add_to_log( "Data corrupt OR post status missing OR post status incorrect..." );
+				$this->add_to_log( "Skipping record." );
+				return false;
 			}
 		}
 
@@ -284,16 +286,14 @@ class Plugin extends Service_Provider {
 					&& empty( $data['_tec_tickets_commerce_event'] )
 				)
 			) {
-				$valid = false;
+				$this->add_to_log( "Corrupt data." );
 				$this->add_to_log( "Link to ticket or event missing..." );
+				$this->add_to_log( "Skipping record." );
+				return false;
 			}
 		}
 
-		if ( ! $valid ) {
-			$this->add_to_log( "Borked data. Skipping." );
-		}
-
-		return $valid;
+		return true;
 	}
 
 	/**
