@@ -173,7 +173,6 @@ class Plugin extends Service_Provider {
 	 * @return bool
 	 */
 	public function maybe_create_post( bool $continue_import, array $data, int $import_id ): bool {
-
 		$this->add_to_log( "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>" );
 
 		// Bail if it's not a supported post type.
@@ -213,7 +212,6 @@ class Plugin extends Service_Provider {
 
 		// Check if relation exists and proceed accordingly.
 		return $this->check_relation_exists( $data );
-
 	}
 
 	/**
