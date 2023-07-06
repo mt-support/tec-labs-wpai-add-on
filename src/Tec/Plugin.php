@@ -684,45 +684,7 @@ class Plugin extends Service_Provider {
 
 			// 5. Update post_name (new id) and post_parent (new order id) for tc attendees
 			if ( $post_type == 'tec_tc_attendee' ) {
-				$stop = false;
-
-				// If there is no record for the parent in the source data, then stop.
-				if ( ! isset( $record['parent'] ) ) {
-					$this->add_to_log( 'Post parent missing from import data...' );
-					$stop = true;
-				} else {
-					// Hash the old linked post type ID (tec_tc_order).
-					$this->meta_value = $this->hashit( $record['parent'] );
-					$this->meta_key   = "_tec_tc_order_export_hash";
-
-					// Grab the new post ID based on the hash.
-					$new_parent = $this->grab_post_id_based_on_meta();
-
-					// If the parent cannot be found in the database then stop.
-					if ( $new_parent == null ) {
-						$this->add_to_log( 'Post parent couldn\'t be found in database...' );
-						$stop = true;
-					}
-				}
-
-				if ( $stop ) {
-					$this->add_to_log( 'Deleting post' );
-					wp_delete_post( $post_id );
-				} else {
-					$args    = [
-						'ID'             => $post_id,
-						'post_name'      => $post_id,
-						'post_parent'    => $new_parent,
-						'comment_status' => 'closed',
-						'ping_status'    => 'closed',
-					];
-					$success = wp_update_post( $args );
-
-					// Logging
-					$msg = "Updating post name and post parent for Attendee ";
-					$msg .= $success ? "successful" : "NOT successful";
-					$this->add_to_log( $msg );
-				}
+				$this->maybe_update_post_data_for_attendee( $record, $post_id );
 			}
 		}
 	}
@@ -831,6 +793,56 @@ class Plugin extends Service_Provider {
 			} else {
 				$this->add_to_log( "Ticket provider update failed.");
 			}
+		}
+	}
+
+	/**
+	 * Update post_name (new id) and post_parent (new order id) for Tickets Commerce Attendees.
+	 *
+	 * @param array $record  The post data.
+	 * @param int   $post_id The new post ID.
+	 *
+	 * @return void
+	 */
+	public function maybe_update_post_data_for_attendee( array $record, int $post_id ): void {
+		$stop = false;
+
+		// If there is no record for the parent in the source data, then stop.
+		if ( ! isset( $record['parent'] ) ) {
+			$this->add_to_log( 'Post parent missing from import data...' );
+			$stop = true;
+		} else {
+			// Hash the old linked post type ID (tec_tc_order).
+			$this->meta_value = $this->hashit( $record['parent'] );
+			$this->meta_key   = "_tec_tc_order_export_hash";
+
+			// Grab the new post ID based on the hash.
+			$new_parent = $this->grab_post_id_based_on_meta();
+
+			// If the parent cannot be found in the database then stop.
+			if ( $new_parent == null ) {
+				$this->add_to_log( 'Post parent could not be found in database...' );
+				$stop = true;
+			}
+		}
+
+		if ( $stop ) {
+			$this->add_to_log( 'Deleting post' );
+			wp_delete_post( $post_id );
+		} else {
+			$args    = [
+				'ID'             => $post_id,
+				'post_name'      => $post_id,
+				'post_parent'    => $new_parent,
+				'comment_status' => 'closed',
+				'ping_status'    => 'closed',
+			];
+			$success = wp_update_post( $args );
+
+			// Logging
+			$msg = "Updating post name and post parent for Attendee ";
+			$msg .= $success ? "successful" : "NOT successful";
+			$this->add_to_log( $msg );
 		}
 	}
 
