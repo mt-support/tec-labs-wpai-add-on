@@ -673,45 +673,7 @@ class Plugin extends Service_Provider {
 			$update_successful = false;
 
 			foreach ( $data['connections'] as $connection ) {
-				$record_meta_key = $connection['record_meta_key'];
-
-				// If the given meta key has a value in the record, do it.
-				if ( ! empty ( $record[ $record_meta_key ] ) ) {
-
-					// If there are multiple connections, e.g. more organizers for an event.
-					if ( $connection['multiple'] ) {
-						$multiple = false;
-						$ids      = $this->maybe_explode( $record[ $record_meta_key ] );
-						foreach ( $ids as $id ) {
-							$this->old_linked_post_id = $id;
-							$record[ $record_meta_key ] = $id;
-							$update_successful = $this->update_linked_post_meta(
-								$connection['linked_post_type'],
-								! empty ( $connection['connection_meta_key'] ) ? $connection['connection_meta_key'] : $record_meta_key,
-								$post_id,
-								$record,
-								$multiple
-							);
-
-							$msg = $multiple ? "Adding " : "Updating ";
-							$msg .= "metadata `" . $record_meta_key . "` for " . $post_title . " was ";
-							$msg .= $update_successful ? "successful" : "NOT successful (or linked post doesn't exist)";
-							$this->add_to_log( $msg );
-							// Set to `true` after first.
-							$multiple = true;
-
-							// Update the ticket IDs in the metadata
-							if ( $post_type == 'tec_tc_order' && $record_meta_key == '_tec_tc_order_tickets_in_order' && $update_successful ) {
-								$this->replace_ids_in_metavalue( $post_id, $data, $record );
-							}
-						}
-					} else {
-						$update_successful = $this->update_linked_post_meta( $connection['linked_post_type'], $record_meta_key, $post_id, $record );
-						$msg = "Updating metadata `" . $record_meta_key . "` for " . $post_title . " was ";
-						$msg .= $update_successful ? "successful" : "NOT successful";
-						$this->add_to_log( $msg );
-					}
-				}
+				$this->update_post_type_connections( $connection, $record, $post_id, $post_title, $post_type );
 			}
 
 			// 4. Re-save _tribe_default_ticket_provider for tribe_events
@@ -789,6 +751,8 @@ class Plugin extends Service_Provider {
 	}
 
 	/**
+	 * Set or update the post origin.
+	 *
 	 * @param string $post_title      The post title (used for log messages).
 	 * @param int    $post_id         The new post ID.
 	 * @param string $origin_meta_key The metakey used to save the origin value.
@@ -799,6 +763,59 @@ class Plugin extends Service_Provider {
 		$msg = "Updating origin for " . $post_title . " was ";
 		$msg .= update_post_meta( $post_id, $origin_meta_key, 'WPAI' ) ? "successful" : "NOT successful (or entry already exists)";
 		$this->add_to_log( $msg );
+	}
+
+	/**
+	 * Update the connections between the post types.
+	 *
+	 * @param array  $connection Array containing information about the connections.
+	 * @param array  $record     The post data.
+	 * @param int    $post_id    The new post ID.
+	 * @param string $post_title The post title (used for logging).
+	 * @param string $post_type  The post type.
+	 *
+	 * @return void
+	 */
+	public function update_post_type_connections( array $connection, array $record, int $post_id, string $post_title, string $post_type ): void {
+		$record_meta_key = $connection['record_meta_key'];
+
+		// If the given meta key has a value in the record, do it.
+		if ( ! empty ( $record[ $record_meta_key ] ) ) {
+
+			// If there are multiple connections, e.g. more organizers for an event.
+			if ( $connection['multiple'] ) {
+				$multiple = false;
+				$ids      = $this->maybe_explode( $record[ $record_meta_key ] );
+				foreach ( $ids as $id ) {
+					$this->old_linked_post_id = $id;
+					$record[ $record_meta_key ] = $id;
+					$update_successful = $this->update_linked_post_meta(
+						$connection['linked_post_type'],
+						! empty ( $connection['connection_meta_key'] ) ? $connection['connection_meta_key'] : $record_meta_key,
+						$post_id,
+						$record,
+						$multiple
+					);
+
+					$msg = $multiple ? "Adding " : "Updating ";
+					$msg .= "metadata `" . $record_meta_key . "` for " . $post_title . " was ";
+					$msg .= $update_successful ? "successful" : "NOT successful (or linked post doesn't exist)";
+					$this->add_to_log( $msg );
+					// Set to `true` after first.
+					$multiple = true;
+
+					// Update the ticket IDs in the metadata
+					if ( $post_type == 'tec_tc_order' && $record_meta_key == '_tec_tc_order_tickets_in_order' && $update_successful ) {
+						$this->replace_ids_in_metavalue( $post_id, $data, $record );
+					}
+				}
+			} else {
+				$update_successful = $this->update_linked_post_meta( $connection['linked_post_type'], $record_meta_key, $post_id, $record );
+				$msg = "Updating metadata `" . $record_meta_key . "` for " . $post_title . " was ";
+				$msg .= $update_successful ? "successful" : "NOT successful";
+				$this->add_to_log( $msg );
+			}
+		}
 	}
 
 	/**
