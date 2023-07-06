@@ -679,13 +679,7 @@ class Plugin extends Service_Provider {
 			// 4. Re-save _tribe_default_ticket_provider for tribe_events
 			// Because WPAI runs wp_unslash()
 			if ( $post_type == 'tribe_events' ) {
-				if ( ! empty( $record['_tribe_default_ticket_provider'] ) && $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module" ) {
-					if ( $this->fix_ticket_provider( $post_id ) ) {
-						$this->add_to_log( "Ticket provider successfully updated." );
-					} else {
-						$this->add_to_log( "Ticket provider update failed.");
-					}
-				}
+				$this->resave_ticket_provider_for_event( $record, $post_id );
 			}
 
 			// 5. Update post_name (new id) and post_parent (new order id) for tc attendees
@@ -814,6 +808,28 @@ class Plugin extends Service_Provider {
 				$msg = "Updating metadata `" . $record_meta_key . "` for " . $post_title . " was ";
 				$msg .= $update_successful ? "successful" : "NOT successful";
 				$this->add_to_log( $msg );
+			}
+		}
+	}
+
+	/**
+	 * Re-save _tribe_default_ticket_provider for tribe_event.
+	 * WP All Import runs wp_unslash() and destroys "TEC\Tickets\Commerce\Module"
+	 *
+	 * @param array $record  The post data.
+	 * @param int   $post_id The new post ID.
+	 *
+	 * @return void
+	 */
+	public function resave_ticket_provider_for_event( array $record, int $post_id ) {
+		if (
+			! empty( $record['_tribe_default_ticket_provider'] )
+		    && $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module"
+		) {
+			if ( $this->fix_ticket_provider( $post_id ) ) {
+				$this->add_to_log( "Ticket provider successfully updated." );
+			} else {
+				$this->add_to_log( "Ticket provider update failed.");
 			}
 		}
 	}
