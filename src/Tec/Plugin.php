@@ -503,141 +503,121 @@ class Plugin extends Service_Provider {
 			}
 		}
 
-		// Update origin for Venues.
-		if ( $post_type === 'tribe_venue' ) {
-			$data = [
-				'create_hash'     => true,
-				'origin_meta_key' => '_VenueOrigin',
-			];
-		}
-
-		// Update origin for Organizers.
-		if ( $post_type === 'tribe_organizer' ) {
-			$data = [
-				'create_hash'     => true,
-				'origin_meta_key' => '_OrganizerOrigin',
-			];
-		}
-
-		if ( $post_type === 'tribe_events' ) {
-			$data                  = [
-				'create_hash'     => true,
-				'origin_meta_key' => '_EventOrigin',
-				'connections'     => [
-					0 => [
-						'multiple'            => false,
-						'record_meta_key'     => '_eventvenueid',
-						'connection_meta_key' => '_EventVenueID',
-						'linked_post_type'    => 'tribe_venue',
+		switch ( $post_type ) {
+			case "tribe_venue":
+				$data = [
+					'create_hash'     => true,
+					'origin_meta_key' => '_VenueOrigin',
+				];
+				break;
+			case "tribe_organizer":
+				$data = [
+					'create_hash'     => true,
+					'origin_meta_key' => '_OrganizerOrigin',
+				];
+				break;
+			case "tribe_events":
+				$data = [
+					'create_hash'     => true,
+					'origin_meta_key' => '_EventOrigin',
+					'connections'     => [
+						0 => [
+							'multiple'            => false,
+							'record_meta_key'     => '_eventvenueid',
+							'connection_meta_key' => '_EventVenueID',
+							'linked_post_type'    => 'tribe_venue',
+						],
+						1 => [
+							'multiple'            => true,
+							'record_meta_key'     => '_eventorganizerid',
+							'connection_meta_key' => '_EventOrganizerID',
+							'linked_post_type'    => 'tribe_organizer',
+						],
 					],
-					1 => [
-						'multiple'            => true,
-						'record_meta_key'     => '_eventorganizerid',
-						'connection_meta_key' => '_EventOrganizerID',
-						'linked_post_type'    => 'tribe_organizer',
+				];
+				break;
+			case "tribe_rsvp_tickets":
+				$data = [
+					'create_hash'     => true,
+					'origin_meta_key' => '_RsvpOrigin',
+					'connections'     => [
+						0 => [
+							'multiple'         => false,
+							'record_meta_key'  => '_tribe_rsvp_for_event',
+							'linked_post_type' => 'tribe_events',
+						],
 					],
-				],
-			];
-		}
-
-		/**
-		 * RSVP tickets
-		 */
-		if ( $post_type === 'tribe_rsvp_tickets' ) {
-			$data                  = [
-				'create_hash'     => true,
-				'origin_meta_key' => '_RsvpOrigin',
-				'connections'     => [
-					0 => [
-						'multiple'         => false,
-						'record_meta_key'  => '_tribe_rsvp_for_event',
-						'linked_post_type' => 'tribe_events',
+				];
+				break;
+			case "tribe_rsvp_attendees":
+				$data = [
+					'create_hash'     => false,
+					'origin_meta_key' => '_RsvpAttendeeOrigin',
+					'connections'     => [
+						0 => [
+							'multiple'         => false,
+							'record_meta_key'  => '_tribe_rsvp_event',
+							'linked_post_type' => 'tribe_events',
+						],
+						1 => [
+							'multiple'         => false,
+							'record_meta_key'  => '_tribe_rsvp_product',
+							'linked_post_type' => 'tribe_rsvp_tickets',
+						],
 					],
-				],
-			];
-		}
-
-		/**
-		 * Attendees for RSVPs
-		 */
-		if ( $post_type === 'tribe_rsvp_attendees' ) {
-			$data                  = [
-				'create_hash'     => false,
-				'origin_meta_key' => '_RsvpAttendeeOrigin',
-				'connections'     => [
-					0 => [
-						'multiple'         => false,
-						'record_meta_key'  => '_tribe_rsvp_event',
-						'linked_post_type' => 'tribe_events',
+				];
+				break;
+			case "tec_tc_ticket":
+				$data = [
+					'create_hash'     => true,
+					'origin_meta_key' => '_TcTicketOrigin',
+					'connections'     => [
+						0 => [
+							'multiple'         => false,
+							'record_meta_key'  => '_tec_tickets_commerce_event',
+							'linked_post_type' => 'tribe_events',
+						],
 					],
-					1 => [
-						'multiple'         => false,
-						'record_meta_key'  => '_tribe_rsvp_product',
-						'linked_post_type' => 'tribe_rsvp_tickets',
+				];
+				break;
+			case "tec_tc_order":
+				$data = [
+					'create_hash'     => true,
+					'origin_meta_key' => '_TCOrderOrigin',
+					'connections'     => [
+						0 => [
+							'multiple'         => false,
+							'record_meta_key'  => '_tec_tc_order_events_in_order',
+							'linked_post_type' => 'tribe_events',
+						],
+						1 => [
+							'multiple'         => true,
+							'record_meta_key'  => '_tec_tc_order_tickets_in_order',
+							'linked_post_type' => 'tec_tc_ticket',
+						],
 					],
-				],
-			];
-		}
-
-		/**
-		 * Tickets with Tickets Commerce (Stripe)
-		 */
-		if ( $post_type === 'tec_tc_ticket' ) {
-			$data                  = [
-				'create_hash'     => true,
-				'origin_meta_key' => '_TcTicketOrigin',
-				'connections'     => [
-					0 => [
-						'multiple'         => false,
-						'record_meta_key'  => '_tec_tickets_commerce_event',
-						'linked_post_type' => 'tribe_events',
+				];
+				break;
+			case "tec_tc_attendee":
+				$data = [
+					'create_hash'     => false,
+					'origin_meta_key' => '_TcAttendeeOrigin',
+					'connections'     => [
+						0 => [
+							'multiple'         => false,
+							'record_meta_key'  => '_tec_tickets_commerce_event',
+							'linked_post_type' => 'tribe_events',
+						],
+						1 => [
+							'multiple'         => false,
+							'record_meta_key'  => '_tec_tickets_commerce_ticket',
+							'linked_post_type' => 'tec_tc_ticket',
+						],
 					],
-				],
-			];
-		}
-
-		/**
-		 * Orders with Tickets Commerce (Stripe)
-		 */
-		if ( $post_type === 'tec_tc_order' ) {
-			$data                  = [
-				'create_hash'     => true,
-				'origin_meta_key' => '_TCOrderOrigin',
-				'connections'     => [
-					0 => [
-						'multiple'         => false,
-						'record_meta_key'  => '_tec_tc_order_events_in_order',
-						'linked_post_type' => 'tribe_events',
-					],
-					1 => [
-						'multiple'         => true,
-						'record_meta_key'  => '_tec_tc_order_tickets_in_order',
-						'linked_post_type' => 'tec_tc_ticket',
-					],
-				],
-			];
-		}
-
-		/**
-		 * Attendees for Tickets Commerce (Stripe)
-		 */
-		if ( $post_type === 'tec_tc_attendee' ) {
-			$data                  = [
-				'create_hash'     => false,
-				'origin_meta_key' => '_TcAttendeeOrigin',
-				'connections'     => [
-					0 => [
-						'multiple'         => false,
-						'record_meta_key'  => '_tec_tickets_commerce_event',
-						'linked_post_type' => 'tribe_events',
-					],
-					1 => [
-						'multiple'         => false,
-						'record_meta_key'  => '_tec_tickets_commerce_ticket',
-						'linked_post_type' => 'tec_tc_ticket',
-					],
-				],
-			];
+				];
+				break;
+			default:
+				break;
 		}
 
 		if ( ! empty( $data ) ) {
