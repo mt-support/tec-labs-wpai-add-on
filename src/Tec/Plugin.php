@@ -665,9 +665,7 @@ class Plugin extends Service_Provider {
 
 		// 2. Save / Update the origin of the post type.
 		if ( ! empty( $data['origin_meta_key'] ) ) {
-			$msg = "Updating origin for " . $post_title . " was ";
-			$msg .= update_post_meta( $post_id, $data['origin_meta_key'], 'WPAI' ) ? "successful" : "NOT successful (or entry already exists)";
-			$this->add_to_log( $msg );
+			$this->update_post_origin( $post_title, $post_id, $data['origin_meta_key'] );
 		}
 
 		// 3. Update all the links between the post types.
@@ -788,6 +786,19 @@ class Plugin extends Service_Provider {
 			$msg = "Creating hash for " . $post_title . " was ";
 			$msg .= update_post_meta( $post_id, $hash_meta_key, $this->hashit( $record_id ) ) ? "successful" : "NOT successful (or entry already exists)";
 			$this->add_to_log( $msg );
+	}
+
+	/**
+	 * @param string $post_title      The post title (used for log messages).
+	 * @param int    $post_id         The new post ID.
+	 * @param string $origin_meta_key The metakey used to save the origin value.
+	 *
+	 * @return void
+	 */
+	public function update_post_origin( string $post_title, int $post_id, string $origin_meta_key ): void {
+		$msg = "Updating origin for " . $post_title . " was ";
+		$msg .= update_post_meta( $post_id, $origin_meta_key, 'WPAI' ) ? "successful" : "NOT successful (or entry already exists)";
+		$this->add_to_log( $msg );
 	}
 
 	/**
