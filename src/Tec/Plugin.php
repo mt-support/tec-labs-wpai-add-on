@@ -806,7 +806,7 @@ class Plugin extends Service_Provider {
 
 					// Update the ticket IDs in the metadata
 					if ( $post_type == 'tec_tc_order' && $record_meta_key == '_tec_tc_order_tickets_in_order' && $update_successful ) {
-						$this->replace_ids_in_metavalue( $post_id, $data, $record );
+						$this->replace_ids_in_metavalue( $post_id );
 					}
 				}
 			} else {
@@ -948,13 +948,11 @@ class Plugin extends Service_Provider {
 	/**
 	 * Replace the old post ID with the new post ID in the postmeta table.
 	 *
-	 * @param int   $post_id The post ID for which the metadata needs to be updated.
-	 * @param array $data    Data defining the connections and what needs to be updated.
-	 * @param array $record  The post data.
+	 * @param int $post_id The post ID for which the metadata needs to be updated.
 	 *
 	 * @return void
 	 */
-	private function replace_ids_in_metavalue( int $post_id, array $data, array $record ): void {
+	private function replace_ids_in_metavalue( int $post_id ): void {
 		$old_linked_post_id = $this->old_linked_post_id;
 		$new_linked_post_id = $this->new_linked_post_id;
 
