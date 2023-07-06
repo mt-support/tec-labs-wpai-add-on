@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name:       TEC Labs Extension: WP All Import add-on for The Events Calendar
- * Plugin URI:        __TRIBE_URL__
- * GitHub Plugin URI: https://github.com/mt-support/tec-labs-__TRIBE_SLUG__
- * Description:       __TRIBE_DESCRIPTION__
- * Version:           0.1.1
+ * Plugin Name:       The Events Calendar Extension: WP All Import Add-On
+ * Plugin URI:        https://theeventscalendar.com/extensions/wpai-add-on/
+ * GitHub Plugin URI: https://github.com/mt-support/tec-labs-wpai-add-on
+ * Description:       WP All Import add-on for The Events Calendar. It can handle Events, Venues, and multiple Organizers, RSVPs, RSVP Attendees, Tickets Commerce Tickets, Tickets Commerce Attendees, and Tickets Commerce Orders. The following are NOT supported: Series, Recurring Events, WooCommerce Tickets, WooCommerce Orders, WooCommerce Attendees.
+ * Version:           1.0.0
  * Author:            The Events Calendar
  * Author URI:        https://evnt.is/1971
  * License:           GPL version 3 or any later version
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       tec-labs-wpai
+ * Text Domain:       tec-labs-wpai-add-on
  *
  *     This plugin is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -25,18 +25,18 @@
 /**
  * Define the base file that loaded the plugin for determining plugin path and other variables.
  *
- * @since 0.1.1
+ * @since 1.0.0
  *
  * @var string Base file that loaded the plugin.
  */
-define( 'TRIBE_EXTENSION_WPAI_FILE', __FILE__ );
+define( 'TRIBE_EXTENSION_WPAI_ADD_ON_FILE', __FILE__ );
 
 /**
  * Register and load the service provider for loading the extension.
  *
- * @since 0.1.1
+ * @since 1.0.0
  */
-function tribe_extension_wpai() {
+function tribe_extension_wpai_add_on() {
 	// When we don't have autoloader from common we bail.
 	if ( ! class_exists( 'Tribe__Autoloader' ) ) {
 		return;
@@ -44,16 +44,16 @@ function tribe_extension_wpai() {
 
 	// Register the namespace so we can the plugin on the service provider registration.
 	Tribe__Autoloader::instance()->register_prefix(
-		'\\Tribe\\Extensions\\WPAI\\',
+		'\\Tribe\\Extensions\\WpaiAddOn\\',
 		__DIR__ . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Tec',
-		'__TRIBE_SLUG__'
+		'wpai-add-on'
 	);
 
 	// Deactivates the plugin in case of the main class didn't autoload.
-	if ( ! class_exists( '\Tribe\Extensions\WPAI\Plugin' ) ) {
+	if ( ! class_exists( '\Tribe\Extensions\WpaiAddOn\Plugin' ) ) {
 		tribe_transient_notice(
-			'__TRIBE_SLUG__',
-			'<p>' . esc_html__( 'Couldn\'t properly load "TEC Labs Extension: WP All Import add-on for The Events Calendar" the extension was deactivated.', 'tec-labs-wpai' ) . '</p>',
+			'wpai-add-on',
+			'<p>' . esc_html__( 'Couldn\'t properly load "The Events Calendar Extension: WP All Import Add-On" the extension was deactivated.', 'tec-labs-wpai-add-on' ) . '</p>',
 			[],
 			// 1 second after that make sure the transient is removed.
 			1
@@ -67,8 +67,8 @@ function tribe_extension_wpai() {
 		return;
 	}
 
-	tribe_register_provider( '\Tribe\Extensions\WPAI\Plugin' );
+	tribe_register_provider( '\Tribe\Extensions\WpaiAddOn\Plugin' );
 }
 
 // Loads after common is already properly loaded.
-add_action( 'tribe_common_loaded', 'tribe_extension_wpai' );
+add_action( 'tribe_common_loaded', 'tribe_extension_wpai_add_on' );

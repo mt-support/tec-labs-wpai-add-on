@@ -2,21 +2,21 @@
 /**
  * Handles the Extension plugin dependency manifest registration.
  *
- * @since 0.1.1
+ * @since 1.0.0
  *
- * @package Tribe\Extensions\WPAI
+ * @package Tribe\Extensions\WpaiAddOn
  */
 
-namespace Tribe\Extensions\WPAI;
+namespace Tribe\Extensions\WpaiAddOn;
 
 use Tribe__Abstract_Plugin_Register as Abstract_Plugin_Register;
 
 /**
  * Class Plugin_Register.
  *
- * @since 0.1.1
+ * @since 1.0.0
  *
- * @package Tribe\Extensions\WPAI
+ * @package Tribe\Extensions\WpaiAddOn
  *
  * @see Tribe__Abstract_Plugin_Register For the plugin dependency manifest registration.
  */
