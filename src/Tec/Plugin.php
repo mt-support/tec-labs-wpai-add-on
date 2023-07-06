@@ -166,6 +166,11 @@ class Plugin extends Service_Provider {
 	 * - Check for data validity.
 	 * - Check if the connection exists.
 	 *
+	 * This filter is used to determine if a post should be created or skipped.
+	 * The returned value should be either true to create the post or false to skip it.
+	 *
+	 * @see https://www.wpallimport.com/documentation/action-reference/#wp_all_import_is_post_to_create
+	 *
 	 * @param bool  $continue_import True to import, false to skip import.
 	 * @param array $data            Array of data to import.
 	 * @param int   $import_id       The ID of the import.
@@ -418,6 +423,10 @@ class Plugin extends Service_Provider {
 
 	/**
 	 * Maybe delete metadata with empty values.
+	 * This fires when WP All Import creates or updates post meta (custom fields).
+	 * The post ID, field name, and field value are provided.
+	 *
+	 * @see https://www.wpallimport.com/documentation/action-reference/#pmxi_update_post_meta
 	 *
 	 * @param int    $post_id    The ID of the current post.
 	 * @param string $meta_key   The meta key being imported.
@@ -474,6 +483,11 @@ class Plugin extends Service_Provider {
 
 	/**
 	 * Do modifications after a post and its post meta have been saved.
+	 *
+	 * This action fires when WP All Import saves a post of any type. The post ID, the record's data
+	 * from your file, and a boolean value showing if the post is being updated are provided.
+	 *
+	 * @see https://www.wpallimport.com/documentation/action-reference/#pmxi_saved_post
 	 *
 	 * @since 1.0.0
 	 *
@@ -1069,6 +1083,8 @@ class Plugin extends Service_Provider {
 	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect eCommerce provider.
 	 *
+	 * @see https://docs.theeventscalendar.com/reference/hooks/tec_tickets_commerce_attendee_post_type_args/
+	 *
 	 * @param array $args Post type arguments.
 	 *
 	 * @return array
@@ -1081,6 +1097,8 @@ class Plugin extends Service_Provider {
 
 	/**
 	 * Adjust the label for Tickets Commerce Orders to reflect eCommerce provider.
+	 *
+	 * @see https://docs.theeventscalendar.com/reference/hooks/tec_tickets_commerce_order_post_type_args/
 	 *
 	 * @param array $args Post type arguments.
 	 *
@@ -1096,9 +1114,11 @@ class Plugin extends Service_Provider {
 	 * Adds '_EventOrigin' to the tracked keys.
 	 * Note: Updating a tracked key triggers the creation or update of the Custom Table entries.
 	 *
-	 * @see   \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
+	 * Allows filtering the list of meta keys that, when modified, should trigger an update to the custom tables’ data.
+	 * @see     \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
+	 * @see     https://docs.theeventscalendar.com/reference/hooks/tec_events_custom_tables_v1_tracked_meta_keys/
 	 *
-	 * @since 1.0.0
+	 * @since   1.0.0
 	 *
 	 * @param array $tracked_keys Array of the tracked keys.
 	 *
