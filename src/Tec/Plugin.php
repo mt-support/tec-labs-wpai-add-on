@@ -660,11 +660,7 @@ class Plugin extends Service_Provider {
 
 		// 1. Create and save the hash based on the old post ID.
 		if ( $data['create_hash'] ) {
-			$hash_meta_key = "_" . $post_type . "_export_hash";
-
-			$msg = "Creating hash for " . $post_title . " was ";
-			$msg .= update_post_meta( $post_id, $hash_meta_key, $this->hashit( $record['id'] ) ) ? "successful" : "NOT successful (or entry already exists)";
-			$this->add_to_log( $msg );
+			$this->create_hash( $post_id, $post_title, $post_type, $record['id'] );
 		}
 
 		// 2. Save / Update the origin of the post type.
@@ -775,6 +771,23 @@ class Plugin extends Service_Provider {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Create the hash based on the old post ID and save it as metadata.
+	 *
+	 * @param int    $post_id    The new post ID.
+	 * @param string $post_title The post title (used for log messages).
+	 * @param string $post_type  The post type.
+	 * @param int    $record_id  The old post ID.
+	 *
+	 * @return void
+	 */
+	public function create_hash( int $post_id, string $post_title, string $post_type, int $record_id ): void {
+			$hash_meta_key = "_" . $post_type . "_export_hash";
+			$msg = "Creating hash for " . $post_title . " was ";
+			$msg .= update_post_meta( $post_id, $hash_meta_key, $this->hashit( $record_id ) ) ? "successful" : "NOT successful (or entry already exists)";
+			$this->add_to_log( $msg );
 	}
 
 	/**
