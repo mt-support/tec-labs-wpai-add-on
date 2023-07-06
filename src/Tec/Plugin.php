@@ -462,11 +462,12 @@ class Plugin extends Service_Provider {
 
 		// If the meta value is empty then delete it.
 		if ( empty( $meta_value ) ) {
-			if ( delete_post_meta( $post_id, $meta_key ) ) {
-				$this->add_to_log( "Post meta value for `" . $meta_key . "` was empty and was deleted." );
-			}
-			else {
-				$this->add_to_log( "<span style='color:red;'>Post meta value for " . $meta_key . "was empty BUT post meta could not be deleted.</span>" );
+			delete_post_meta( $post_id, $meta_key );
+
+			if ( metadata_exists( 'post', $post_id, $meta_key ) ) {
+				$this->add_to_log( "<span style='color:red;'>Post meta value for " . $meta_key . " was empty BUT post meta could not be deleted.</span>" );
+			} else {
+				$this->add_to_log( "Post meta value for `" . $meta_key . "` was empty and was deleted (or cannot be found)." );
 			}
 		}
 	}
@@ -783,7 +784,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	public function resave_ticket_provider_for_event( array $record, int $post_id ) {
+	public function resave_ticket_provider_for_event( array $record, int $post_id ): void {
 		if (
 			! empty( $record['_tribe_default_ticket_provider'] )
 		    && $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module"
