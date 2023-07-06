@@ -206,7 +206,7 @@ class Plugin extends Service_Provider {
 			$this->add_to_log(
 			// Translators: 1) Singular label of the post type being imported. 2) Title of the post currently imported.
 				sprintf(
-					'%1$s `%2$s` will be force-imported, even if a related post doesn\'t exist.',
+					'%1$s `%2$s` will be force-imported, even if a related post does not exist.',
 					$pto->labels->singular_name,
 					$data['title'],
 				)
@@ -359,7 +359,7 @@ class Plugin extends Service_Provider {
 
 		$links = $relations[ $data['posttype'] ];
 		foreach( $links as $link ) {
-			// Stop immediately if there is an issue. Otherwise keep cycling.
+			// Stop immediately if there is an issue. Otherwise, keep cycling.
 			if ( ! $this->check_link( $link, $data ) ) {
 				return false;
 			}
@@ -408,7 +408,7 @@ class Plugin extends Service_Provider {
 				$this->add_to_log(
 				// Translators: 1) Singular label of the related post type. 2) Title of the post being imported.
 					sprintf(
-						'Related `%1$s` post for `%2$s` doesn\'t exist. It will NOT be imported.',
+						'Related `%1$s` post for `%2$s` does not exist. It will NOT be imported.',
 						$lpto->labels->singular_name,
 						$data['title']
 					)
@@ -685,7 +685,6 @@ class Plugin extends Service_Provider {
 
 		// 3. Update all the links between the post types.
 		if ( ! empty ( $data['connections'] ) ) {
-			$update_successful = false;
 
 			foreach ( $data['connections'] as $connection ) {
 				$this->update_post_type_connections( $connection, $record, $post_id, $post_title, $post_type );
