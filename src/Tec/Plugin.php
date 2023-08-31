@@ -1109,7 +1109,7 @@ class Plugin extends Service_Provider {
 	 * @return array
 	 */
 	function tc_attendees_label( array $args ): array {
-		$args['label'] = "Attendees - Tickets Commerce";
+		$args['label'] = "Tickets Commerce Attendees";
 
 		return $args;
 	}
@@ -1124,7 +1124,7 @@ class Plugin extends Service_Provider {
 	 * @return array
 	 */
 	function tc_orders_label( array $args ): array {
-		$args['label'] = "Orders - Tickets Commerce";
+		$args['label'] = "Tickets Commerce Orders";
 
 		return $args;
 	}
