@@ -146,6 +146,7 @@ class Plugin extends Service_Provider {
 		add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
 		add_filter( 'tec_tickets_commerce_order_post_type_args', [ $this, 'tc_orders_label' ] );
 		add_filter( 'tribe_tickets_register_attendee_post_type_args', [ $this, 'rsvp_attendees_label' ] );
+		add_filter( 'tribe_tickets_register_order_post_type_args', [ $this, 'tpp_orders_label' ] );
 
 		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
 
@@ -1145,6 +1146,22 @@ class Plugin extends Service_Provider {
 		} else {
 			$args['label'] = 'Tribe Commerce Attendees';
 		}
+
+		return $args;
+	}
+
+	/**
+	 * Adjust the label for Tribe Commerce Orders to reflect eCommerce provider.
+	 * Note: Tribe Commerce has been deprecated in favor of Tickets Commerce.
+	 *
+	 * @see https://docs.theeventscalendar.com/reference/hooks/tribe_tickets_register_order_post_type_args/
+	 *
+	 * @param array $args Post type arguments.
+	 *
+	 * @return array
+	 */
+	function tpp_orders_label( array $args ): array {
+		$args['label'] = "Tribe Commerce Orders";
 
 		return $args;
 	}
