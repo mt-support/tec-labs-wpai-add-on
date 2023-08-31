@@ -855,7 +855,16 @@ class Plugin extends Service_Provider {
 
 			// Logging
 			$msg = "Updating post name and post parent for Attendee ";
-			$msg .= $success ? "successful" : "NOT successful";
+			if ( $success > 0 ) {
+				$msg .= "successful.";
+			}
+			elseif ( $success <= 0 ) {
+				$msg .= "NOT successful";
+			}
+			elseif ( is_wp_error( $success ) ) {
+				$msg .= "failed with the following error: ";
+				$msg .= $success->get_error_message();
+			}
 			$this->add_to_log( $msg );
 		}
 	}
