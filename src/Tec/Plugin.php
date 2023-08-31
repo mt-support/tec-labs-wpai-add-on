@@ -399,6 +399,13 @@ class Plugin extends Service_Provider {
 		}
 
 		// We need to handle an array because Tickets Commerce orders can have multiple tickets.
+
+		// Bail if not string.
+		if ( ! is_string( $data[ $link['meta_key'] ] ) ) {
+			$this->add_to_log( '`meta_key` is not a string. Skipping.');
+			return false;
+		}
+
 		$post_ids = $this->maybe_explode( $data[ $link['meta_key'] ] );
 		foreach ( $post_ids as $post_id ) {
 			$hash_meta_value = $this->hashit( $post_id );
@@ -749,9 +756,12 @@ class Plugin extends Service_Provider {
 	public function update_post_type_connections( array $connection, array $record, int $post_id, string $post_title, string $post_type ): void {
 		$record_meta_key = $connection['record_meta_key'];
 
-		// If the given meta key has a value in the record, do it.
-		if ( ! empty ( $record[ $record_meta_key ] ) ) {
-
+		// If the given meta key has a value in the record, and it is a string, do it.
+		if (
+			! empty ( $record[ $record_meta_key ] )
+			&& is_string( $record[ $record_meta_key ] )
+		)
+		{
 			// If there are multiple connections, e.g. more organizers for an event.
 			if ( $connection['multiple'] ) {
 				$multiple = false;
@@ -885,11 +895,11 @@ class Plugin extends Service_Provider {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed $value The delimiter separated meta value.
+	 * @param string $value The delimiter separated meta value.
 	 *
 	 * @return string[]    String or array of meta values.
 	 */
-	private function maybe_explode( mixed $value ): array {
+	private function maybe_explode( string $value ): array {
 		// Not digits
 		$pattern = '/(\D)/i';
 
