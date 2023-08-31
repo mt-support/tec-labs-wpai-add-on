@@ -242,8 +242,9 @@ class Plugin extends Service_Provider {
 			&& empty( $data['_tec_tickets_commerce_event'] )
 		) {
 			$this->add_to_log( "Corrupt data." );
-			$this->add_to_log( "Link to event missing..." );
-			$this->add_to_log( "Skipping record." );
+			$this->add_to_log( "-> Link to event is missing." );
+			$this->add_to_log( "-> Skipping record." );
+
 			return false;
 		}
 
@@ -264,9 +265,9 @@ class Plugin extends Service_Provider {
 				|| ! isset( $record['status'] )
 				|| ! str_starts_with( $record['status'], 'tec-tc-' )
 			) {
-				$this->add_to_log( "Corrupt data." );
-				$this->add_to_log( "Data corrupt OR post status missing OR post status incorrect..." );
-				$this->add_to_log( "Skipping record." );
+				$this->add_to_log( "Corrupt data:" );
+				$this->add_to_log( "-> Data corrupt OR post status missing OR post status incorrect." );
+				$this->add_to_log( "-> Skipping record." );
 				return false;
 			}
 		}
@@ -292,8 +293,8 @@ class Plugin extends Service_Provider {
 				)
 			) {
 				$this->add_to_log( "Corrupt data." );
-				$this->add_to_log( "Link to ticket or event missing..." );
-				$this->add_to_log( "Skipping record." );
+				$this->add_to_log( "-> Link to ticket or event is missing." );
+				$this->add_to_log( "-> Skipping record." );
 				return false;
 			}
 		}
@@ -815,7 +816,7 @@ class Plugin extends Service_Provider {
 			if ( $this->fix_ticket_provider( $post_id ) ) {
 				$this->add_to_log( "Ticket provider successfully updated." );
 			} else {
-				$this->add_to_log( "Ticket provider update failed.");
+				$this->add_to_log( "Ticket provider update failed." );
 			}
 		}
 	}
@@ -851,7 +852,7 @@ class Plugin extends Service_Provider {
 		}
 
 		if ( $stop ) {
-			$this->add_to_log( 'Deleting post' );
+			$this->add_to_log( 'Deleting post.' );
 			wp_delete_post( $post_id );
 		} else {
 			$args    = [
@@ -897,7 +898,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @param string $value The delimiter separated meta value.
 	 *
-	 * @return string[]    String or array of meta values.
+	 * @return string[]     String or array of meta values.
 	 */
 	private function maybe_explode( string $value ): array {
 		// Not digits
