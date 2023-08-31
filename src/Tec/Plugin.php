@@ -145,6 +145,7 @@ class Plugin extends Service_Provider {
 
 		add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
 		add_filter( 'tec_tickets_commerce_order_post_type_args', [ $this, 'tc_orders_label' ] );
+		add_filter( 'tribe_tickets_register_attendee_post_type_args', [ $this, 'rsvp_attendees_label' ] );
 
 		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
 
@@ -1125,6 +1126,25 @@ class Plugin extends Service_Provider {
 	 */
 	function tc_orders_label( array $args ): array {
 		$args['label'] = "Tickets Commerce Orders";
+
+		return $args;
+	}
+
+	/**
+	 * Adjust the label for RSVP Attendees to reflect attendee type.
+	 *
+	 * @see https://docs.theeventscalendar.com/reference/hooks/tribe_tickets_register_attendee_post_type_args/
+	 *
+	 * @param array $args Post type arguments.
+	 *
+	 * @return array
+	 */
+	function rsvp_attendees_label( $args ) {
+		if ( $args['hierarchical'] == true ) {
+			$args['label'] = 'RSVP Attendees';
+		} else {
+			$args['label'] = 'Tribe Commerce Attendees';
+		}
 
 		return $args;
 	}
