@@ -185,7 +185,7 @@ class Plugin extends Service_Provider {
 		// Bail if it's not a supported post type.
 		if (
 			! isset( $data['posttype'] )
-			|| ! in_array( $data['posttype'], $this->get_supported_post_types(), true )
+			|| ! in_array( $data['posttype'], $this->get_supported_post_types( false ), true )
 		) {
 			$this->add_to_log( "Not supported post type. Skipping.");
 			return false;
@@ -300,6 +300,7 @@ class Plugin extends Service_Provider {
 				return false;
 			}
 		}
+		$this->add_to_log( "Yes, data is valid. Moving forward..." );
 
 		return true;
 	}
