@@ -359,6 +359,11 @@ class Plugin extends Service_Provider {
 			],
 		];
 
+		if ( ! array_key_exists( $data['posttype'], $relations ) ) {
+			$this->add_to_log( "Post type has no linked posts. Moving forward..." );
+			return true;
+		}
+
 		$this->add_to_log( "Checking if linked posts exist..." );
 
 		$links = $relations[ $data['posttype'] ];
