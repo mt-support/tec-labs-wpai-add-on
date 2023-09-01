@@ -264,11 +264,12 @@ class Plugin extends Service_Provider {
 					&& is_array( $data['_tec_tc_order_total_value'] )
 					&& empty( $data['_tec_tc_order_total_value'] )
 				)
-				|| ! isset( $record['status'] )
-				|| ! str_starts_with( $record['status'], 'tec-tc-' )
+				|| ! isset( $data['status'] )
+				|| ! str_starts_with( $data['status'], 'tec-tc-' )
 			) {
 				$this->add_to_log( "Corrupt data:" );
 				$this->add_to_log( "-> Data corrupt OR post status missing OR post status incorrect." );
+				$this->add_to_log( "-> Order value: " . $data['_tec_tc_order_total_value'] . "; Post status: " . $data['status'] . ")" );
 				$this->add_to_log( "-> Skipping record." );
 				return false;
 			}
