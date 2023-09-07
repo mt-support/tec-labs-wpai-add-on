@@ -4,9 +4,9 @@
  *
  * @since 1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn
+ * @package TEC\Extensions\WpaiAddOn
  */
-namespace Tribe\Extensions\WpaiAddOn;
+namespace TEC\Extensions\WpaiAddOn;
 
 use Tribe__Settings_Manager;
 

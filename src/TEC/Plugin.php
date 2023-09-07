@@ -4,10 +4,10 @@
  *
  * @since 1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn
+ * @package TEC\Extensions\WpaiAddOn
  */
 
-namespace Tribe\Extensions\WpaiAddOn;
+namespace TEC\Extensions\WpaiAddOn;
 
 use TEC\Common\Contracts\Service_Provider;
 
@@ -16,7 +16,7 @@ use TEC\Common\Contracts\Service_Provider;
  *
  * @since 1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn
+ * @package TEC\Extensions\WpaiAddOn
  */
 class Plugin extends Service_Provider {
 	/**
@@ -35,7 +35,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @var string
 	 */
-	const SLUG = 'wpai-add-on';
+	const SLUG = TEC_EXTENSION_WPAI_ADD_ON_SLUG;
 
 	/**
 	 * Stores the base slug for the extension.
@@ -44,7 +44,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @var string
 	 */
-	const FILE = TRIBE_EXTENSION_WPAI_ADD_ON_FILE;
+	const FILE = TEC_EXTENSION_WPAI_ADD_ON_FILE;
 
 	/**
 	 * @since 1.0.0
@@ -1242,7 +1242,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @return string
      *
-	 * @see \Tribe\Extensions\WpaiAddOn\Settings::set_options_prefix()
+	 * @see \TEC\Extensions\WpaiAddOn\Settings::set_options_prefix()
 	 *
 	 * TODO: Remove if not using settings
 	 */
