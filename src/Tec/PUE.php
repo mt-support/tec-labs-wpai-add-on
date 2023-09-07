@@ -2,39 +2,38 @@
 /**
  * Handles the update functionality of the plugin.
  *
- * @since 0.1.1
+ * @since 1.0.0
  *
- * @package Tribe\Extensions\WPAI;
+ * @package Tribe\Extensions\WpaiAddOn;
  */
 
-namespace Tribe\Extensions\WPAI;
+namespace Tribe\Extensions\WpaiAddOn;
 
 use TEC\Common\Contracts\Service_Provider;
 use Tribe__PUE__Checker;
-use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class PUE.
  *
- * @since 0.1.1
+ * @since 1.0.0
  *
- * @package Tribe\Extensions\WPAI;
+ * @package Tribe\Extensions\WpaiAddOn;
  */
 class PUE extends Service_Provider {
 
 	/**
 	 * The slug used for PUE.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
-	private static $pue_slug = 'extension-__TRIBE_SLUG__';
+	private static $pue_slug = 'extension-wpai-add-on';
 
 	/**
 	 * Whether to load PUE or not.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +42,7 @@ class PUE extends Service_Provider {
 	/**
 	 * Plugin update URL.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +51,7 @@ class PUE extends Service_Provider {
 	/**
 	 * The PUE checker instance.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 *
 	 * @var Tribe__PUE__Checker
 	 */
@@ -61,11 +60,11 @@ class PUE extends Service_Provider {
 	/**
 	 * Registers the filters required by the Plugin Update Engine.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'extension.wpai.pue', $this );
+		$this->container->singleton( 'extension.wpai_add_on.pue', $this );
 
 		// Bail to avoid notice.
 		if ( ! static:: $is_active ) {
@@ -81,13 +80,13 @@ class PUE extends Service_Provider {
 	 * If the PUE Checker class exists, go ahead and create a new instance to handle
 	 * update checks for this plugin.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 */
 	public function load_plugin_update_engine() {
 		/**
 		 * Filters whether Extension exists on PUE component should manage the plugin updates or not.
 		 *
-		 * @since 0.1.1
+		 * @since 1.0.0
 		 *
 		 * @param bool   $pue_enabled Whether PUE component should manage the plugin updates or not.
 		 * @param string $pue_slug    The plugin slug used to register it in the Plugin Update Engine.
@@ -109,7 +108,7 @@ class PUE extends Service_Provider {
 	/**
 	 * Get the PUE slug for this plugin.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 *
 	 * @return string PUE slug.
 	 */
@@ -120,7 +119,7 @@ class PUE extends Service_Provider {
 	/**
 	 * Handles the removal of PUE-related options when the plugin is uninstalled.
 	 *
-	 * @since 0.1.1
+	 * @since 1.0.0
 	 */
 	public static function uninstall() {
 		$slug = str_replace( '-', '_', static::get_slug() );

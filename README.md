@@ -35,16 +35,16 @@ If you have modifications you would like to suggest to our base template, here i
 
 By default, all of these variables will be replaced by the create method from the slack bot, but if you are creating your extension manually you will need to find/replace on all of the below.
 
-* `TEC Labs` - "The Events Calendar" or "Event Tickets"
-* `__TRIBE_NAME__` - Plugin Human-readable name, e.g. "Sample Extension"
-* `__TRIBE_NAMESPACE__` - Which namespace we will use for the plugin. Usually the plugin name or the slug in uppercase without spaces, e.g. "SampleExtension"
-* `__TRIBE_SLUG__` - Uses using dashes normally, e.g. "sample-extension"
-* `__TRIBE_DOMAIN__` - Translation domain normally with "tribe-" prefix, e.g. "tec-labs-sample-extension"
-* `__TRIBE_SLUG_CLEAN__` - Uses underscores, so it's safe for variables, e.g. "sample_extension"
-* `__TRIBE_SLUG_CLEAN_ALLCAPS__` - All-caps of clean slug, e.g. "SAMPLE_EXTENSION"
-* `__TRIBE_URL__` - The URL of the extension page, by default empty. Usually "https://theeventscalendar.com/extensions/sample-extension/"
-* `0.1.1` - Version number of the extension, by default empty. Follows the "1.0.0" format
-* `__TRIBE_DESCRIPTION__` - The description of the extension, by default empty.
+* `The Events Calendar` - The Events Calendar
+* `WP All Import Add-On` - WP All Import Add-On - Plugin Human-readable name, e.g. "Sample Extension"
+* `WpaiAddOn` - WpaiAddOn - Which namespace we will use for the plugin. Usually the plugin name or the slug in uppercase without spaces, e.g. "SampleExtension"
+* `wpai-add-on` - wpai-add-on - Uses using dashes normally, e.g. "sample-extension"
+* `tec-labs-wpai-add-on` - tec-labs-wpai-add-on - Translation domain normally with "tribe-" prefix, e.g. "tec-labs-sample-extension"
+* `wpai_add_on` - wpai_add_on - Uses underscores, so it's safe for variables, e.g. "sample_extension"
+* `WPAI_ADD_ON` - WPAI_ADD_ON - All-caps of clean slug, e.g. "SAMPLE_EXTENSION"
+* `https://theeventscalendar.com/extensions/wpai-add-on/` - https://theeventscalendar.com/extensions/wpai-add-on/ - The URL of the extension page, by default empty. Usually "https://theeventscalendar.com/extensions/sample-extension/"
+* `1.0.0` - Version number of the extension, by default empty. Follows the "1.0.0" format
+* `WP All Import add-on for The Events Calendar` - The description of the extension, by default empty.
 
 #### Slack Bot commands related to Extensions
 

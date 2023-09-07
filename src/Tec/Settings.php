@@ -2,11 +2,11 @@
 /**
  * Settings Object.
  *
- * @since 0.1.1
+ * @since 1.0.0
  *
- * @package Tribe\Extensions\WPAI
+ * @package Tribe\Extensions\WpaiAddOn
  */
-namespace Tribe\Extensions\WPAI;
+namespace Tribe\Extensions\WpaiAddOn;
 
 use Tribe__Settings_Manager;
 
@@ -88,7 +88,7 @@ class Settings {
 	 */
 	private function set_options_prefix( $options_prefix = '' ) {
 		if ( empty( $opts_prefix ) ) {
-			$opts_prefix = str_replace( '-', '_', 'tec-labs-wpai' ); // The text domain.
+			$opts_prefix = str_replace( '-', '_', 'tec-labs-wpai-add-on' ); // The text domain.
 		}
 
 		$opts_prefix = $opts_prefix . '_';
@@ -237,8 +237,8 @@ class Settings {
 			// TODO: Settings heading end.
 			'a_setting' => [ // TODO: Change setting.
 				'type'            => 'text',
-				'label'           => esc_html__( 'Example setting', 'tec-labs-wpai' ),
-				'tooltip'         => sprintf( esc_html__( 'Example setting description. Enter your custom URL, including "http://" or "https://", for example %s.', 'tec-labs-wpai' ), '<code>https://demo.theeventscalendar.com/</code>' ),
+				'label'           => esc_html__( 'Example setting', 'tec-labs-wpai-add-on' ),
+				'tooltip'         => sprintf( esc_html__( 'Example setting description. Enter your custom URL, including "http://" or "https://", for example %s.', 'tec-labs-wpai-add-on' ), '<code>https://demo.theeventscalendar.com/</code>' ),
 				'validation_type' => 'html',
 			],
 		];
@@ -279,10 +279,10 @@ class Settings {
 	 * @return string
 	 */
 	private function get_example_intro_text() {
-		$result = '<h3>' . esc_html_x( 'Example Extension Setup', 'Settings header', 'tec-labs-wpai' ) . '</h3>';
+		$result = '<h3>' . esc_html_x( 'Example Extension Setup', 'Settings header', 'tec-labs-wpai-add-on' ) . '</h3>';
 		$result .= '<div style="margin-left: 20px;">';
 		$result .= '<p>';
-		$result .= esc_html_x( 'Some text here about this settings section.', 'Setting section description', 'tec-labs-wpai' );
+		$result .= esc_html_x( 'Some text here about this settings section.', 'Setting section description', 'tec-labs-wpai-add-on' );
 		$result .= '</p>';
 		$result .= '</div>';
 
