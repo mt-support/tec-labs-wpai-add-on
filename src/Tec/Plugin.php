@@ -871,7 +871,7 @@ class Plugin extends Service_Provider {
 				'comment_status' => 'closed',
 				'ping_status'    => 'closed',
 			];
-			$success = wp_update_post( $args );
+			$success = wp_update_post( $args, true );
 
 			// Logging
 			$msg = "Updating post name and post parent for Attendee ";
