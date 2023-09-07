@@ -451,7 +451,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	public function maybe_skip_post_meta( int $post_id, string $meta_key, mixed $meta_value ): void {
+	public function maybe_skip_post_meta( int $post_id, string $meta_key, $meta_value ): void {
 		$post_type = get_post_type( $post_id );
 
 		// Bail (don't delete) if it's a post type that we don't care about.
@@ -491,7 +491,7 @@ class Plugin extends Service_Provider {
 			delete_post_meta( $post_id, $meta_key );
 
 			if ( metadata_exists( 'post', $post_id, $meta_key ) ) {
-				$this->add_to_log( "<span style='color:red;'>Post meta value for " . $meta_key . " was empty BUT post meta could not be deleted.</span>" );
+				$this->add_to_log( "<span style='color:red;'>Post meta value for $meta_key was empty BUT post meta could not be deleted.</span>" );
 			} else {
 				$this->add_to_log( "Post meta value for `" . $meta_key . "` was empty and was deleted (or cannot be found)." );
 			}
@@ -514,7 +514,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	function maybe_update_post( int $post_id, mixed $xml_node, bool $is_update ): void {
+	function maybe_update_post( int $post_id, $xml_node, bool $is_update ): void {
 		// Convert SimpleXml object to array for easier use.
 		$record = json_decode( json_encode( ( array ) $xml_node ), 1 );
 
@@ -934,7 +934,7 @@ class Plugin extends Service_Provider {
 	 * @return int|false                 Meta ID (add) or true (update) on success, false on failure.
 	 *
 	 */
-	private function update_linked_post_meta( string $linked_post_type, string $meta_key_to_update, int $post_id, array $record, bool $multiple = false ): bool|int {
+	private function update_linked_post_meta( string $linked_post_type, string $meta_key_to_update, int $post_id, array $record, bool $multiple = false ) {
 		$this->add_to_log( "Updating linked post meta..." );
 		$meta_key       = "_" . $linked_post_type . "_export_hash";
 		$this->meta_key = $meta_key;
@@ -968,7 +968,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @return false|string|null
 	 */
-	function get_post_id_from_meta( string $meta_key, string $meta_value ): bool|string|null {
+	function get_post_id_from_meta( string $meta_key, string $meta_value ) {
 		global $wpdb;
 		$pid = $wpdb->get_var(
 			$wpdb->prepare(
