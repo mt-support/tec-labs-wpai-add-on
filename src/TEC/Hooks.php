@@ -71,7 +71,7 @@ class Hooks extends Service_Provider {
 	 */
 	public function load_text_domains() {
 		$mopath = tribe( Plugin::class )->plugin_dir . 'lang/';
-		$domain = 'tec-labs-wpai-add-on';
+		$domain = TEC_EXTENSION_WPAI_ADD_ON_SLUG;
 
 		// This will load `wp-content/languages/plugins` files first.
 		Common::instance()->load_text_domain( $domain, $mopath );
