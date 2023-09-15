@@ -39,7 +39,7 @@ class Plugin extends Service_Provider {
 	const SLUG = TEC_EXTENSION_WPAI_ADD_ON_SLUG;
 
 	/**
-	 * Stores the base slug for the extension.
+	 * Stores the file for the extension.
 	 *
 	 * @since 1.0.0
 	 *
