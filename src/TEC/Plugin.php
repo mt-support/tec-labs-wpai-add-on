@@ -30,24 +30,6 @@ class Plugin extends Service_Provider {
 	const VERSION = '1.0.0';
 
 	/**
-	 * Stores the base slug for the plugin.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
-	 */
-	const SLUG = TEC_EXTENSION_WPAI_ADD_ON_SLUG;
-
-	/**
-	 * Stores the base slug for the extension.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
-	 */
-	const FILE = TEC_EXTENSION_WPAI_ADD_ON_FILE;
-
-	/**
 	 * @since 1.0.0
 	 *
 	 * @var string Plugin Directory.
@@ -123,7 +105,7 @@ class Plugin extends Service_Provider {
 	 */
 	public function register(): void {
 		// Set up the plugin provider properties.
-		$this->plugin_path = trailingslashit( dirname( static::FILE ) );
+		$this->plugin_path = trailingslashit( dirname( TEC_EXTENSION_WPAI_ADD_ON_FILE ) );
 		$this->plugin_dir  = trailingslashit( basename( $this->plugin_path ) );
 		$this->plugin_url  = plugins_url( $this->plugin_dir, $this->plugin_path );
 
@@ -138,10 +120,6 @@ class Plugin extends Service_Provider {
 			// If the plugin dependency manifest is not met, then bail and stop here.
 			return;
 		}
-
-		// Do the settings.
-		// TODO: Remove if not using settings
-		//$this->get_settings();
 
 		// Start binds before WP All Import starts the import.
 		if ( ! has_action( 'pmxi_before_xml_import', [ $this, 'init_import_hooks' ] ) ) {
@@ -359,19 +337,6 @@ class Plugin extends Service_Provider {
 		}
 
 		return $this->settings;
-	}
-
-	/**
-	 * Get all of this extension's options.
-	 *
-	 * @return array
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	public function get_all_options(): array {
-		$settings = $this->get_settings();
-
-		return $settings->get_all_options();
 	}
 
 	/**

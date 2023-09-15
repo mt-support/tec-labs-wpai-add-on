@@ -73,7 +73,7 @@ class PUE extends Service_Provider {
 
 		add_action( 'tribe_helper_activation_complete', [ $this, 'load_plugin_update_engine' ] );
 
-		register_uninstall_hook( Plugin::FILE, [ static::class, 'uninstall' ] );
+		register_uninstall_hook( TEC_EXTENSION_WPAI_ADD_ON_FILE, [ static::class, 'uninstall' ] );
 	}
 
 	/**
@@ -101,7 +101,7 @@ class PUE extends Service_Provider {
 			$this->update_url,
 			static::get_slug(),
 			[],
-			plugin_basename( Plugin::FILE )
+			plugin_basename( TEC_EXTENSION_WPAI_ADD_ON_FILE )
 		);
 	}
 

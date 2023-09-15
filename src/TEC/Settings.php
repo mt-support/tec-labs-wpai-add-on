@@ -143,26 +143,6 @@ class Settings {
 	}
 
 	/**
-	 * Get an array of all of this extension's options without array keys having the redundant prefix.
-	 *
-	 * @return array
-	 */
-	public function get_all_options() {
-		$raw_options = $this->get_all_raw_options();
-
-		$result = [];
-
-		$prefix = $this->get_options_prefix();
-
-		foreach ( $raw_options as $key => $value ) {
-			$abbr_key            = str_replace( $prefix, '', $key );
-			$result[ $abbr_key ] = $value;
-		}
-
-		return $result;
-	}
-
-	/**
 	 * Get an array of all of this extension's raw options (i.e. the ones starting with its prefix).
 	 *
 	 * @return array

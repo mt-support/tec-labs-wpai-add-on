@@ -21,7 +21,7 @@ use Tribe__Abstract_Plugin_Register as Abstract_Plugin_Register;
  * @see Tribe__Abstract_Plugin_Register For the plugin dependency manifest registration.
  */
 class Plugin_Register extends Abstract_Plugin_Register {
-	protected $base_dir     = Plugin::FILE;
+	protected $base_dir     = TEC_EXTENSION_WPAI_ADD_ON_FILE;
 	protected $version      = Plugin::VERSION;
 	protected $main_class   = Plugin::class;
 	protected $dependencies = [
