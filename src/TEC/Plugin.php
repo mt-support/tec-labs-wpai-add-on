@@ -51,15 +51,6 @@ class Plugin extends Service_Provider {
 	public string $plugin_url;
 
 	/**
-	 * @since 1.0.0
-	 *
-	 * @var Settings
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	private Settings $settings;
-
-	/**
 	 * Stores the meta key name.
 	 *
 	 * @since 1.0.0
@@ -307,51 +298,5 @@ class Plugin extends Service_Provider {
 
 		$this->container->singleton( Plugin_Register::class, $plugin_register );
 		$this->container->singleton( 'extension.wpai_add_on', $plugin_register );
-	}
-
-	/**
-	 * Get this plugin's options prefix.
-	 *
-	 * Settings_Helper will append a trailing underscore before each option.
-	 *
-	 * @return string
-	 *
-	 * @see \TEC\Extensions\WpaiAddOn\Settings::set_options_prefix()
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	private function get_options_prefix(): string {
-		return (string) str_replace( '-', '_', 'tec-labs-wpai-add-on' );
-	}
-
-	/**
-	 * Get Settings instance.
-	 *
-	 * @return Settings
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	private function get_settings(): Settings {
-		if ( empty( $this->settings ) ) {
-			$this->settings = new Settings( $this->get_options_prefix() );
-		}
-
-		return $this->settings;
-	}
-
-	/**
-	 * Get a specific extension option.
-	 *
-	 * @param string $option  The option name.
-	 * @param string $default The default option value.
-	 *
-	 * @return array
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	public function get_option( string $option, string $default = '' ): array {
-		$settings = $this->get_settings();
-
-		return $settings->get_option( $option, $default );
 	}
 }
