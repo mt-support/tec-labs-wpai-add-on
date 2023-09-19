@@ -10,10 +10,10 @@
  *
  * @since 1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn
+ * @package TEC\Extensions\WpaiAddOn
  */
 
-namespace Tribe\Extensions\WpaiAddOn;
+namespace TEC\Extensions\WpaiAddOn;
 
 use TEC\Common\Contracts\Service_Provider;
 
@@ -22,7 +22,7 @@ use TEC\Common\Contracts\Service_Provider;
  *
  * @since 1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn
+ * @package TEC\Extensions\WpaiAddOn
  */
 class Assets extends Service_Provider {
 	/**

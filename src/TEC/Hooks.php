@@ -4,22 +4,22 @@
  *
  * To remove a filter:
  * ```php
- *  remove_filter( 'some_filter', [ tribe( Tribe\Extensions\WpaiAddOn\Hooks::class ), 'some_filtering_method' ] );
+ *  remove_filter( 'some_filter', [ tribe( TEC\Extensions\WpaiAddOn\Hooks::class ), 'some_filtering_method' ] );
  *  remove_filter( 'some_filter', [ tribe( 'extension.wpai_add_on.hooks' ), 'some_filtering_method' ] );
  * ```
  *
  * To remove an action:
  * ```php
- *  remove_action( 'some_action', [ tribe( Tribe\Extensions\WpaiAddOn\Hooks::class ), 'some_method' ] );
+ *  remove_action( 'some_action', [ tribe( TEC\Extensions\WpaiAddOn\Hooks::class ), 'some_method' ] );
  *  remove_action( 'some_action', [ tribe( 'extension.wpai_add_on.hooks' ), 'some_method' ] );
  * ```
  *
  * @since 1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn;
+ * @package TEC\Extensions\WpaiAddOn;
  */
 
-namespace Tribe\Extensions\WpaiAddOn;
+namespace TEC\Extensions\WpaiAddOn;
 
 use TEC\Common\Contracts\Service_Provider;
 use Tribe__Main as Common;
@@ -29,7 +29,7 @@ use Tribe__Main as Common;
  *
  * @since 1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn;
+ * @package TEC\Extensions\WpaiAddOn;
  */
 class Hooks extends Service_Provider {
 
@@ -71,7 +71,7 @@ class Hooks extends Service_Provider {
 	 */
 	public function load_text_domains() {
 		$mopath = tribe( Plugin::class )->plugin_dir . 'lang/';
-		$domain = 'tec-labs-wpai-add-on';
+		$domain = TEC_EXTENSION_WPAI_ADD_ON_SLUG;
 
 		// This will load `wp-content/languages/plugins` files first.
 		Common::instance()->load_text_domain( $domain, $mopath );

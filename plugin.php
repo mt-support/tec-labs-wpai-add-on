@@ -29,14 +29,23 @@
  *
  * @var string Base file that loaded the plugin.
  */
-define( 'TRIBE_EXTENSION_WPAI_ADD_ON_FILE', __FILE__ );
+define( 'TEC_EXTENSION_WPAI_ADD_ON_FILE', __FILE__ );
+
+/**
+ * A base slug used to uniquely identify this extension.
+ *
+ * @since 1.0.0
+ *
+ * @var string A unique slug used in context to uniquely identify this extension.
+ */
+define( 'TEC_EXTENSION_WPAI_ADD_ON_SLUG', 'tec-labs-wpai-add-on' );
 
 /**
  * Register and load the service provider for loading the extension.
  *
  * @since 1.0.0
  */
-function tribe_extension_wpai_add_on() {
+function tec_extension_wpai_add_on() {
 	// When we don't have autoloader from common we bail.
 	if ( ! class_exists( 'Tribe__Autoloader' ) ) {
 		return;
@@ -44,16 +53,16 @@ function tribe_extension_wpai_add_on() {
 
 	// Register the namespace so we can the plugin on the service provider registration.
 	Tribe__Autoloader::instance()->register_prefix(
-		'\\Tribe\\Extensions\\WpaiAddOn\\',
-		__DIR__ . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Tec',
-		'wpai-add-on'
+		'\\TEC\\Extensions\\WpaiAddOn\\',
+		__DIR__ . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'TEC',
+		TEC_EXTENSION_WPAI_ADD_ON_SLUG
 	);
 
 	// Deactivates the plugin in case of the main class didn't autoload.
-	if ( ! class_exists( '\Tribe\Extensions\WpaiAddOn\Plugin' ) ) {
+	if ( ! class_exists( '\TEC\Extensions\WpaiAddOn\Plugin' ) ) {
 		tribe_transient_notice(
-			'wpai-add-on',
-			'<p>' . esc_html__( 'Couldn\'t properly load "The Events Calendar Extension: WP All Import Add-On" the extension was deactivated.', 'tec-labs-wpai-add-on' ) . '</p>',
+			TEC_EXTENSION_WPAI_ADD_ON_SLUG,
+			'<p>' . esc_html__( 'Couldn\'t properly load "The Events Calendar Extension: WP All Import Add-On" the extension was deactivated.', TEC_EXTENSION_WPAI_ADD_ON_SLUG ) . '</p>',
 			[],
 			// 1 second after that make sure the transient is removed.
 			1
@@ -67,8 +76,8 @@ function tribe_extension_wpai_add_on() {
 		return;
 	}
 
-	tribe_register_provider( '\Tribe\Extensions\WpaiAddOn\Plugin' );
+	tribe_register_provider( '\TEC\Extensions\WpaiAddOn\Plugin' );
 }
 
 // Loads after common is already properly loaded.
-add_action( 'tribe_common_loaded', 'tribe_extension_wpai_add_on' );
+add_action( 'tribe_common_loaded', 'tec_extension_wpai_add_on' );

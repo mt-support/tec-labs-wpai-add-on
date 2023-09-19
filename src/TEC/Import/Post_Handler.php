@@ -1,24 +1,18 @@
 <?php
-/**
- * Plugin Class.
- *
- * @since 1.0.0
- *
- * @package Tribe\Extensions\WpaiAddOn
- */
 
-namespace Tribe\Extensions\WpaiAddOn;
+namespace TEC\Extensions\WpaiAddOn\Import;
 
-use TEC\Common\Contracts\Service_Provider;
+use TEC\Extensions\WpaiAddOn\Settings;
 
 /**
- * Class Plugin
+ * Responsible for managing various post import delegation.
  *
- * @since 1.0.0
+ * @since   1.0.0
  *
- * @package Tribe\Extensions\WpaiAddOn
+ * @package TEC\Extensions\WpaiAddOn\Import
  */
-class Plugin extends Service_Provider {
+class Post_Handler {
+
 	/**
 	 * Stores the version for the plugin.
 	 *
@@ -35,7 +29,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @var string
 	 */
-	const SLUG = 'wpai-add-on';
+	const SLUG = TEC_EXTENSION_WPAI_ADD_ON_SLUG;
 
 	/**
 	 * Stores the base slug for the extension.
@@ -44,7 +38,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @var string
 	 */
-	const FILE = TRIBE_EXTENSION_WPAI_ADD_ON_FILE;
+	const FILE = TEC_EXTENSION_WPAI_ADD_ON_FILE;
 
 	/**
 	 * @since 1.0.0
@@ -112,56 +106,6 @@ class Plugin extends Service_Provider {
 	 */
 	private int $new_linked_post_id;
 
-
-	/**
-	 * Set up the Extension's properties.
-	 *
-	 * This always executes even if the required plugins are not present.
-	 *
-	 * @since 1.0.0
-	 */
-	public function register(): void {
-		// Set up the plugin provider properties.
-		$this->plugin_path = trailingslashit( dirname( static::FILE ) );
-		$this->plugin_dir  = trailingslashit( basename( $this->plugin_path ) );
-		$this->plugin_url  = plugins_url( $this->plugin_dir, $this->plugin_path );
-
-		// Register this provider as the main one and use a bunch of aliases.
-		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'extension.wpai_add_on', $this );
-		$this->container->singleton( 'extension.wpai_add_on.plugin', $this );
-		$this->container->register( PUE::class );
-
-		if ( ! $this->check_plugin_dependencies() ) {
-			// If the plugin dependency manifest is not met, then bail and stop here.
-			return;
-		}
-
-		// Do the settings.
-		// TODO: Remove if not using settings
-		//$this->get_settings();
-
-		// Start binds.
-
-		add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
-		add_filter( 'tec_tickets_commerce_order_post_type_args', [ $this, 'tc_orders_label' ] );
-		add_filter( 'tribe_tickets_register_attendee_post_type_args', [ $this, 'rsvp_attendees_label' ] );
-		add_filter( 'tribe_tickets_register_order_post_type_args', [ $this, 'tpp_orders_label' ] );
-
-		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
-
-		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
-
-		add_action( 'pmxi_update_post_meta', [ $this, 'maybe_skip_post_meta' ], 10, 3 );
-
-		add_action( 'pmxi_saved_post', [ $this, 'maybe_update_post' ], 10, 3 );
-
-		// End binds.
-
-		$this->container->register( Hooks::class );
-		$this->container->register( Assets::class );
-	}
-
 	/**
 	 * Check whether a post should to be imported or not.
 	 * We only do this for post types that must have a connection.
@@ -187,7 +131,8 @@ class Plugin extends Service_Provider {
 			! isset( $data['posttype'] )
 			|| ! in_array( $data['posttype'], $this->get_supported_post_types( false ), true )
 		) {
-			$this->add_to_log( "Not supported post type. Skipping.");
+			$this->add_to_log( "Not supported post type. Skipping." );
+
 			return false;
 		}
 
@@ -271,6 +216,7 @@ class Plugin extends Service_Provider {
 				$this->add_to_log( "-> Data corrupt OR post status missing OR post status incorrect." );
 				$this->add_to_log( "-> Order value: " . $data['_tec_tc_order_total_value'] . "; Post status: " . $data['status'] . ")" );
 				$this->add_to_log( "-> Skipping record." );
+
 				return false;
 			}
 		}
@@ -298,6 +244,7 @@ class Plugin extends Service_Provider {
 				$this->add_to_log( "Corrupt data." );
 				$this->add_to_log( "-> Link to ticket or event is missing." );
 				$this->add_to_log( "-> Skipping record." );
+
 				return false;
 			}
 		}
@@ -317,7 +264,7 @@ class Plugin extends Service_Provider {
 	function check_relation_exists( array $data ): bool {
 		$relations = [
 			'tribe_rsvp_tickets'   => [
-				0 =>[
+				0 => [
 					'linked_post_type' => 'tribe_events',
 					'meta_key'         => '_tribe_rsvp_for_event',
 				],
@@ -332,24 +279,24 @@ class Plugin extends Service_Provider {
 					'meta_key'         => '_tribe_rsvp_product',
 				],
 			],
-			'tec_tc_ticket'   => [
-				0 =>[
+			'tec_tc_ticket'        => [
+				0 => [
 					'linked_post_type' => 'tribe_events',
 					'meta_key'         => '_tec_tickets_commerce_event',
 				],
 			],
-			'tec_tc_attendee'   => [
-				0 =>[
+			'tec_tc_attendee'      => [
+				0 => [
 					'linked_post_type' => 'tribe_events',
 					'meta_key'         => '_tec_tickets_commerce_event',
 				],
-				1 =>[
+				1 => [
 					'linked_post_type' => 'tec_tc_ticket',
 					'meta_key'         => '_tec_tickets_commerce_ticket',
 				],
 			],
-			'tec_tc_order'   => [
-				0 =>[
+			'tec_tc_order'         => [
+				0 => [
 					'linked_post_type' => 'tribe_events',
 					'meta_key'         => '_tec_tc_order_events_in_order',
 				],
@@ -362,13 +309,14 @@ class Plugin extends Service_Provider {
 
 		if ( ! array_key_exists( $data['posttype'], $relations ) ) {
 			$this->add_to_log( "Post type has no linked posts. Moving forward..." );
+
 			return true;
 		}
 
 		$this->add_to_log( "Checking if linked posts exist..." );
 
 		$links = $relations[ $data['posttype'] ];
-		foreach( $links as $link ) {
+		foreach ( $links as $link ) {
 			// Stop immediately if there is an issue. Otherwise, keep cycling.
 			if ( ! $this->check_link( $link, $data ) ) {
 				return false;
@@ -377,6 +325,7 @@ class Plugin extends Service_Provider {
 
 		// Go ahead if there are no issues.
 		$this->add_to_log( "All linked posts found. Moving forward..." );
+
 		return true;
 	}
 
@@ -412,7 +361,8 @@ class Plugin extends Service_Provider {
 
 		// Bail if not string.
 		if ( ! is_string( $data[ $link['meta_key'] ] ) ) {
-			$this->add_to_log( '`meta_key` is not a string. Skipping.');
+			$this->add_to_log( '`meta_key` is not a string. Skipping.' );
+
 			return false;
 		}
 
@@ -467,6 +417,7 @@ class Plugin extends Service_Provider {
 		// Bail if we want to keep empty metadata.
 		if ( $keep_empty_meta ) {
 			$this->add_to_log( "Keeping empty post meta for all." );
+
 			return;
 		}
 
@@ -483,6 +434,7 @@ class Plugin extends Service_Provider {
 		// Bail (don't delete) if we want to keep that empty post meta.
 		if ( in_array( $meta_key, $keep_post_meta_meta_keys, true ) ) {
 			$this->add_to_log( "Keeping empty post meta for `" . $meta_key . "` based on filter." );
+
 			return;
 		}
 
@@ -504,7 +456,7 @@ class Plugin extends Service_Provider {
 	 * This action fires when WP All Import saves a post of any type. The post ID, the record's data
 	 * from your file, and a boolean value showing if the post is being updated are provided.
 	 *
-	 * @see https://www.wpallimport.com/documentation/action-reference/#pmxi_saved_post
+	 * @see   https://www.wpallimport.com/documentation/action-reference/#pmxi_saved_post
 	 *
 	 * @since 1.0.0
 	 *
@@ -662,18 +614,18 @@ class Plugin extends Service_Provider {
 	 *
 	 * Sample:
 	 *
-	$data = [
-		'create_hash'     => true,
-		'origin_meta_key' => '_TCOrderOrigin',
-		'connections'     => [
-			0 => [
-		        'multiple'            => false,
-				'record_meta_key'     => '_tec_tc_order_events_in_order',
-				'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different from record_meta_key
-				'linked_post_type'    => 'tribe_events',
-			],
-		],
-	];
+	 * $data = [
+	 * 'create_hash'     => true,
+	 * 'origin_meta_key' => '_TCOrderOrigin',
+	 * 'connections'     => [
+	 * 0 => [
+	 * 'multiple'            => false,
+	 * 'record_meta_key'     => '_tec_tc_order_events_in_order',
+	 * 'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different from record_meta_key
+	 * 'linked_post_type'    => 'tribe_events',
+	 * ],
+	 * ],
+	 * ];
 	 *
 	 * @param array  $data      Data defining the connections and what needs to be updated.
 	 * @param int    $post_id   The new post ID.
@@ -731,10 +683,10 @@ class Plugin extends Service_Provider {
 	 * @return void
 	 */
 	public function create_hash( int $post_id, string $post_title, string $post_type, int $record_id ): void {
-			$hash_meta_key = "_" . $post_type . "_export_hash";
-			$msg = "Creating hash for " . $post_title . " was ";
-			$msg .= update_post_meta( $post_id, $hash_meta_key, $this->hashit( $record_id ) ) ? "successful" : "NOT successful (or entry already exists)";
-			$this->add_to_log( $msg );
+		$hash_meta_key = "_" . $post_type . "_export_hash";
+		$msg           = "Creating hash for " . $post_title . " was ";
+		$msg           .= update_post_meta( $post_id, $hash_meta_key, $this->hashit( $record_id ) ) ? "successful" : "NOT successful (or entry already exists)";
+		$this->add_to_log( $msg );
 	}
 
 	/**
@@ -770,16 +722,15 @@ class Plugin extends Service_Provider {
 		if (
 			! empty ( $record[ $record_meta_key ] )
 			&& is_string( $record[ $record_meta_key ] )
-		)
-		{
+		) {
 			// If there are multiple connections, e.g. more organizers for an event.
 			if ( $connection['multiple'] ) {
 				$multiple = false;
 				$ids      = $this->maybe_explode( $record[ $record_meta_key ] );
 				foreach ( $ids as $id ) {
-					$this->old_linked_post_id = $id;
+					$this->old_linked_post_id   = $id;
 					$record[ $record_meta_key ] = $id;
-					$update_successful = $this->update_linked_post_meta(
+					$update_successful          = $this->update_linked_post_meta(
 						$connection['linked_post_type'],
 						! empty ( $connection['connection_meta_key'] ) ? $connection['connection_meta_key'] : $record_meta_key,
 						$post_id,
@@ -801,8 +752,8 @@ class Plugin extends Service_Provider {
 				}
 			} else {
 				$update_successful = $this->update_linked_post_meta( $connection['linked_post_type'], $record_meta_key, $post_id, $record );
-				$msg = "Updating metadata `" . $record_meta_key . "` for " . $post_title . " was ";
-				$msg .= $update_successful ? "successful" : "NOT successful";
+				$msg               = "Updating metadata `" . $record_meta_key . "` for " . $post_title . " was ";
+				$msg               .= $update_successful ? "successful" : "NOT successful";
 				$this->add_to_log( $msg );
 			}
 		}
@@ -820,7 +771,7 @@ class Plugin extends Service_Provider {
 	public function resave_ticket_provider_for_event( array $record, int $post_id ): void {
 		if (
 			! empty( $record['_tribe_default_ticket_provider'] )
-		    && $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module"
+			&& $record['_tribe_default_ticket_provider'] == "TEC\Tickets\Commerce\Module"
 		) {
 			if ( $this->fix_ticket_provider( $post_id ) ) {
 				$this->add_to_log( "Ticket provider successfully updated." );
@@ -877,11 +828,9 @@ class Plugin extends Service_Provider {
 			$msg = "Updating post name and post parent for Attendee ";
 			if ( $success > 0 ) {
 				$msg .= "successful.";
-			}
-			elseif ( $success <= 0 ) {
+			} elseif ( $success <= 0 ) {
 				$msg .= "NOT successful";
-			}
-			elseif ( is_wp_error( $success ) ) {
+			} elseif ( is_wp_error( $success ) ) {
 				$msg .= "failed with the following error: ";
 				$msg .= $success->get_error_message();
 			}
@@ -942,7 +891,7 @@ class Plugin extends Service_Provider {
 		$metafield_lowercase = strtolower( $meta_key_to_update );  // In the WPAI $record the meta keys come through as lowercase.
 
 		// Hash the old linked post type ID.
-		$meta_value = $this->hashit( $record[ $metafield_lowercase ] );
+		$meta_value       = $this->hashit( $record[ $metafield_lowercase ] );
 		$this->meta_value = $meta_value;
 
 		// Grab the new post ID based on the hash.
@@ -957,6 +906,7 @@ class Plugin extends Service_Provider {
 				return update_post_meta( $post_id, $meta_key_to_update, $new_linked_post_id );
 			}
 		}
+
 		return false;
 	}
 
@@ -981,7 +931,7 @@ class Plugin extends Service_Provider {
 				[ $meta_value, $meta_key ]
 			)
 		);
-		if( $pid != '' ) {
+		if ( $pid != '' ) {
 			return $pid;
 		} else {
 			return false;
@@ -1001,15 +951,15 @@ class Plugin extends Service_Provider {
 		global $wpdb;
 		$success = $wpdb->query(
 			$wpdb->prepare(
-			"UPDATE $wpdb->postmeta 
+				"UPDATE $wpdb->postmeta 
 			SET `meta_value` = %s 
 			WHERE `post_id` = %s 
 			AND `meta_key` = %s 
 			AND `meta_value` = %s",
-			'TEC\Tickets\Commerce\Module',
-			$post_id,
-			'_tribe_default_ticket_provider',
-			'TECTicketsCommerceModule'
+				'TEC\Tickets\Commerce\Module',
+				$post_id,
+				'_tribe_default_ticket_provider',
+				'TECTicketsCommerceModule'
 			)
 		);
 
@@ -1032,11 +982,11 @@ class Plugin extends Service_Provider {
 
 		// Grab the part with the current ID
 		// Copy the part to the new ID
-		$meta[$new_linked_post_id] = $meta[$old_linked_post_id];
-		$meta[$new_linked_post_id]['ticket_id'] = $new_linked_post_id;
+		$meta[ $new_linked_post_id ]              = $meta[ $old_linked_post_id ];
+		$meta[ $new_linked_post_id ]['ticket_id'] = $new_linked_post_id;
 
 		// Remove the part with the current ID
-		unset( $meta[$old_linked_post_id] );
+		unset( $meta[ $old_linked_post_id ] );
 
 		// Re-save meta entry
 		$success = update_post_meta( $post_id, '_tec_tc_order_items', $meta );
@@ -1054,7 +1004,7 @@ class Plugin extends Service_Provider {
 	 */
 	private function grab_post_id_based_on_meta(): ?string {
 		global $wpdb;
-		$meta_key = $this->meta_key;
+		$meta_key   = $this->meta_key;
 		$meta_value = $this->meta_value;
 
 		$post_id = $wpdb->get_var(
@@ -1075,7 +1025,8 @@ class Plugin extends Service_Provider {
 	/**
 	 * Get the post types supported by the extension.
 	 *
-	 * @param bool $with_connection Whether it is only the post types that require a connection (true) or all post types (false).
+	 * @param bool $with_connection Whether it is only the post types that require a connection (true) or all post
+	 *                              types (false).
 	 *
 	 * @return array The supported post types.
 	 */
@@ -1178,8 +1129,6 @@ class Plugin extends Service_Provider {
 	 * Note: Updating a tracked key triggers the creation or update of the Custom Table entries.
 	 *
 	 * Allows filtering the list of meta keys that, when modified, should trigger an update to the custom tables’ data.
-	 * @see     \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
-	 * @see     https://docs.theeventscalendar.com/reference/hooks/tec_events_custom_tables_v1_tracked_meta_keys/
 	 *
 	 * @since   1.0.0
 	 *
@@ -1187,6 +1136,9 @@ class Plugin extends Service_Provider {
 	 *
 	 * @return array
 	 *
+	 * @see     https://docs.theeventscalendar.com/reference/hooks/tec_events_custom_tables_v1_tracked_meta_keys/
+	 *
+	 * @see     \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
 	 */
 	public function modify_tracked_meta_keys( array $tracked_keys ): array {
 		$tracked_keys[] = '_EventOrigin';
@@ -1207,90 +1159,5 @@ class Plugin extends Service_Provider {
 			date( "H:i:s" )
 		);
 		flush();
-	}
-
-	/**
-	 * Checks whether the plugin dependency manifest is satisfied or not.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return bool Whether the plugin dependency manifest is satisfied or not.
-	 */
-	protected function check_plugin_dependencies(): bool {
-		$this->register_plugin_dependencies();
-
-		return tribe_check_plugin( static::class );
-	}
-
-	/**
-	 * Registers the plugin and dependency manifest among those managed by Tribe Common.
-	 *
-	 * @since 1.0.0
-	 */
-	protected function register_plugin_dependencies(): void {
-		$plugin_register = new Plugin_Register();
-		$plugin_register->register_plugin();
-
-		$this->container->singleton( Plugin_Register::class, $plugin_register );
-		$this->container->singleton( 'extension.wpai_add_on', $plugin_register );
-	}
-
-	/**
-	 * Get this plugin's options prefix.
-	 *
-	 * Settings_Helper will append a trailing underscore before each option.
-	 *
-	 * @return string
-     *
-	 * @see \Tribe\Extensions\WpaiAddOn\Settings::set_options_prefix()
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	private function get_options_prefix(): string {
-		return (string) str_replace( '-', '_', 'tec-labs-wpai-add-on' );
-	}
-
-	/**
-	 * Get Settings instance.
-	 *
-	 * @return Settings
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	private function get_settings(): Settings {
-		if ( empty( $this->settings ) ) {
-			$this->settings = new Settings( $this->get_options_prefix() );
-		}
-
-		return $this->settings;
-	}
-
-	/**
-	 * Get all of this extension's options.
-	 *
-	 * @return array
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	public function get_all_options(): array {
-		$settings = $this->get_settings();
-
-		return $settings->get_all_options();
-	}
-
-	/**
-	 * Get a specific extension option.
-	 *
-	 * @param string $option  The option name.
-	 * @param string $default The default option value.
-	 *
-	 * @return array
-	 *
-	 * TODO: Remove if not using settings
-	 */
-	public function get_option( string $option, string $default = '' ): array {
-		$settings = $this->get_settings();
-
-		return $settings->get_option( $option, $default );
 	}
 }
