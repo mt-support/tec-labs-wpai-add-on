@@ -112,6 +112,9 @@ class Plugin extends Service_Provider {
 			return;
 		}
 
+		// Run the label hooks
+		add_action( 'plugins_loaded', [ $this, 'init_label_hooks' ] );
+
 		// Start binds before WP All Import starts the import.
 		if ( ! has_action( 'pmxi_before_xml_import', [ $this, 'init_import_hooks' ] ) ) {
 			add_action( 'pmxi_before_xml_import', [ $this, 'init_import_hooks' ] );
@@ -123,17 +126,27 @@ class Plugin extends Service_Provider {
 	}
 
 	/**
-	 * Setup our import hooks.
+	 * Run our label hooks.
 	 *
 	 * @since 1.0.0
 	 */
-	public function init_import_hooks() {
+	public function init_label_hooks() {
 		add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
 		add_filter( 'tec_tickets_commerce_order_post_type_args', [ $this, 'tc_orders_label' ] );
 		add_filter( 'tribe_tickets_register_attendee_post_type_args', [ $this, 'rsvp_attendees_label' ] );
 		add_filter( 'tribe_tickets_register_order_post_type_args', [ $this, 'tpp_orders_label' ] );
 		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
 
+		// Clean ourselves up after hooks.
+		remove_action( 'plugins_loaded', [ $this, 'init_import_hooks' ] );
+	}
+
+	/**
+	 * Setup our import hooks.
+	 *
+	 * @since 1.0.0
+	 */
+	public function init_import_hooks() {
 		// WP All Import specific hooks.
 		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
 		add_action( 'pmxi_update_post_meta', [ $this, 'maybe_skip_post_meta' ], 10, 3 );
