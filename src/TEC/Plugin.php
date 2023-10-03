@@ -131,10 +131,17 @@ class Plugin extends Service_Provider {
 	 * @since 1.0.0
 	 */
 	public function init_label_hooks() {
-		add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
-		add_filter( 'tec_tickets_commerce_order_post_type_args', [ $this, 'tc_orders_label' ] );
-		add_filter( 'tribe_tickets_register_attendee_post_type_args', [ $this, 'rsvp_attendees_label' ] );
-		add_filter( 'tribe_tickets_register_order_post_type_args', [ $this, 'tpp_orders_label' ] );
+		if ( isset( $_GET['page'] ) &&
+		     (
+				$_GET['page'] == 'pmxe-admin-export'
+				|| $_GET['page'] == 'pmxi-admin-import'
+		     )
+		) {
+			add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
+			add_filter( 'tec_tickets_commerce_order_post_type_args', [ $this, 'tc_orders_label' ] );
+			add_filter( 'tribe_tickets_register_attendee_post_type_args', [ $this, 'rsvp_attendees_label' ] );
+			add_filter( 'tribe_tickets_register_order_post_type_args', [ $this, 'tpp_orders_label' ] );
+		}
 
 		// Clean ourselves up after hooks.
 		remove_action( 'plugins_loaded', [ $this, 'init_label_hooks' ] );
