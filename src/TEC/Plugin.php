@@ -137,7 +137,7 @@ class Plugin extends Service_Provider {
 		add_filter( 'tribe_tickets_register_order_post_type_args', [ $this, 'tpp_orders_label' ] );
 
 		// Clean ourselves up after hooks.
-		remove_action( 'plugins_loaded', [ $this, 'init_import_hooks' ] );
+		remove_action( 'plugins_loaded', [ $this, 'init_label_hooks' ] );
 	}
 
 	/**
