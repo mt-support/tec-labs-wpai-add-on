@@ -896,7 +896,9 @@ class Post_Handler {
 
 		// Grab the new post ID based on the hash.
 		$new_linked_post_id       = $this->grab_post_id_based_on_meta();
-		$this->new_linked_post_id = $new_linked_post_id;
+		if ( $new_linked_post_id != null ) {
+			$this->new_linked_post_id = $new_linked_post_id;
+		}
 
 		// If there's an ID, update.
 		if ( $new_linked_post_id ) {
