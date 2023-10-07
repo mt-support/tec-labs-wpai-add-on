@@ -116,13 +116,29 @@ class Plugin extends Service_Provider {
 		add_action( 'plugins_loaded', [ $this, 'init_label_hooks' ] );
 
 		// Start binds before WP All Import starts the import.
-		if ( ! has_action( 'pmxi_before_xml_import', [ $this, 'init_import_hooks' ] ) ) {
-			add_action( 'pmxi_before_xml_import', [ $this, 'init_import_hooks' ] );
+		if ( ! has_action( 'pmxi_before_post_import', [ $this, 'init_import_hooks' ] ) ) {
+			add_action( 'pmxi_before_post_import', [ $this, 'init_import_hooks' ] );
 		}
 
 		// End binds.
 		$this->container->register( Hooks::class );
 		$this->container->register( Assets::class );
+	}
+
+	/**
+	 * Setup our import hooks.
+	 *
+	 * @since 1.0.0
+	 */
+	public function init_import_hooks() {
+		// WP All Import specific hooks.
+		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
+		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
+		add_action( 'pmxi_update_post_meta', [ $this, 'maybe_skip_post_meta' ], 10, 3 );
+		add_action( 'pmxi_saved_post', [ $this, 'maybe_update_post' ], 10, 3 );
+
+		// Clean ourselves up after hooks.
+		remove_action( 'pmxi_before_post_import', [ $this, 'init_import_hooks' ] );
 	}
 
 	/**
@@ -148,23 +164,7 @@ class Plugin extends Service_Provider {
 	}
 
 	/**
-	 * Setup our import hooks.
-	 *
-	 * @since 1.0.0
-	 */
-	public function init_import_hooks() {
-		// WP All Import specific hooks.
-		add_filter( 'tec_events_custom_tables_v1_tracked_meta_keys', [ $this, 'modify_tracked_meta_keys' ] );
-		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
-		add_action( 'pmxi_update_post_meta', [ $this, 'maybe_skip_post_meta' ], 10, 3 );
-		add_action( 'pmxi_saved_post', [ $this, 'maybe_update_post' ], 10, 3 );
-
-		// Clean ourselves up after hooks.
-		remove_action( 'pmxi_before_xml_import', [ $this, 'init_import_hooks' ] );
-	}
-
-	/**
-	 * Check whether a post should to be imported or not.
+	 * Check whether a post should be imported or not.
 	 * We only do this for post types that must have a connection.
 	 * - Check for data validity.
 	 * - Check if the connection exists.

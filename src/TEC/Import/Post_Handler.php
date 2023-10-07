@@ -895,19 +895,19 @@ class Post_Handler {
 		$this->meta_value = $meta_value;
 
 		// Grab the new post ID based on the hash.
-		$new_linked_post_id       = $this->grab_post_id_based_on_meta();
-		$this->new_linked_post_id = $new_linked_post_id;
+		$new_linked_post_id = $this->grab_post_id_based_on_meta();
 
-		// If there's an ID, update.
-		if ( $new_linked_post_id ) {
-			if ( $multiple ) {
-				return add_post_meta( $post_id, $meta_key_to_update, $new_linked_post_id );
-			} else {
-				return update_post_meta( $post_id, $meta_key_to_update, $new_linked_post_id );
-			}
+		if ( ! $new_linked_post_id ) {
+			return false;
 		}
 
-		return false;
+		$this->new_linked_post_id = $new_linked_post_id;
+
+		if ( $multiple ) {
+			return add_post_meta( $post_id, $meta_key_to_update, $new_linked_post_id );
+		} else {
+			return update_post_meta( $post_id, $meta_key_to_update, $new_linked_post_id );
+		}
 	}
 
 	/**
