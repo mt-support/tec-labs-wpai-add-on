@@ -1155,8 +1155,9 @@ class Post_Handler {
 	 */
 	function add_to_log( string $message ): void {
 		printf(
-			"<div class='progress-msg tec-labs-migration-add-on'><span style='color: #334aff;'>[%s] TEC - $message</span></div>",
-			date( "H:i:s" )
+			"<div class='progress-msg tec-labs-migration-add-on'><span style='color: #334aff;'>[%s] TEC - %s</span></div>",
+			date( "H:i:s" ),
+			$message
 		);
 		flush();
 	}
