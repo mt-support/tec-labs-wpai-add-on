@@ -131,7 +131,7 @@ class Post_Handler {
 			! isset( $data['posttype'] )
 			|| ! in_array( $data['posttype'], $this->get_supported_post_types( false ), true )
 		) {
-			$this->add_to_log( "Not supported post type. Skipping." );
+			$msg = "Not supported post type. ";
 
 			$continue = false;
 
@@ -143,6 +143,9 @@ class Post_Handler {
 			 * @param bool $continue Whether the import should be forced to continue. Default: false.
 			 */
 			$continue = apply_filters( 'tec_labs_wpai_is_post_type_set', $continue );
+
+			$msg .= $continue ? '`tec_labs_wpai_is_post_type_set` override in place, post will be imported.' : 'Skipping.' ;
+			$this->add_to_log( $msg );
 
 			return $continue;
 		}
