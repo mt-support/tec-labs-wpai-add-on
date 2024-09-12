@@ -4,7 +4,7 @@
  * Plugin URI:        https://theeventscalendar.com/extensions/wpai-add-on/
  * GitHub Plugin URI: https://github.com/mt-support/tec-labs-wpai-add-on
  * Description:       WP All Import add-on for The Events Calendar. It can handle Events, Venues, and multiple Organizers, RSVPs, RSVP Attendees, Tickets Commerce Tickets, Tickets Commerce Attendees, and Tickets Commerce Orders. The following are NOT supported: Series, Recurring Events, WooCommerce Tickets, WooCommerce Orders, WooCommerce Attendees.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            The Events Calendar
  * Author URI:        https://evnt.is/1971
  * License:           GPL version 3 or any later version
