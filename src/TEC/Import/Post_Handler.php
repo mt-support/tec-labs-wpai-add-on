@@ -498,7 +498,7 @@ class Post_Handler {
 				wp_delete_post( $post_id, true );
 				$this->add_to_log( "Post (ID: " . $post_id . ") deleted." );
 			} else {
-				$this->add_to_log( "Post (ID: " . $post_id . ") will be imported based on filter." );
+				$this->add_to_log( "`tec_labs_wpai_delete_mismatching_post_type` override in place. Post (ID: " . $post_id . ") will be imported." );
 			}
 		}
 
