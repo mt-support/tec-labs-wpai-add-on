@@ -149,6 +149,16 @@ class Post_Handler {
 			if ( ! $continue ) {
 				return false;
 			}
+
+			/**
+			 * A filter to allow changing the default post type if there is none set.
+			 * This helps avoid warnings and errors.
+			 *
+			 * @since 1.1.0
+			 *
+			 * @param string $default_post_type The post type to be used when there is none set in the source.
+			 */
+			$data['posttype'] = apply_filters('tec_labs_wpai_default_post_type', $data['posttype'] ?? 'wpai_post' );
 		}
 
 		// Bail if data is not valid.
