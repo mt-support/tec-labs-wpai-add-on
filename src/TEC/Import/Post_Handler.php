@@ -147,7 +147,10 @@ class Post_Handler {
 			$msg .= $continue ? '`tec_labs_wpai_is_post_type_set` override in place, post will be imported.' : 'Skipping.' ;
 			$this->add_to_log( $msg );
 
-			return $continue;
+			// Bail, if there is no override for the non-supported post type.
+			if ( ! $continue ) {
+				return false;
+			}
 		}
 
 		// Bail if data is not valid.
