@@ -280,7 +280,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * Allows filtering the list of meta keys that, when modified, should trigger an update to the custom tables’ data.
 	 *
-	 * @since   1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param array $tracked_keys Array of the tracked keys.
 	 *
