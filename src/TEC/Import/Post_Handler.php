@@ -133,7 +133,18 @@ class Post_Handler {
 		) {
 			$this->add_to_log( "Not supported post type. Skipping." );
 
-			return false;
+			$continue = false;
+
+			/**
+			 * A filter to allow forcing the import even if post type is not supported or not set.
+			 *
+			 * @since 1.1.0
+			 *
+			 * @param bool $continue Whether the import should be forced to continue. Default: false.
+			 */
+			$continue = apply_filters( 'tec_labs_wpai_is_post_type_set', $continue );
+
+			return $continue;
 		}
 
 		// Bail if data is not valid.
