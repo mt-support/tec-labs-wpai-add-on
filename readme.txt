@@ -37,6 +37,11 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
+= [1.1.0] 2024-09-12 =
+
+* Feature - Add the `tec_labs_wpai_is_post_type_set` filter to allow force importing when the post type is not defined in the source.
+* Tweak - Add more details to some log messages.
+
 = [1.0.0] 2023-10-17 =
 
 * Initial release
