@@ -20,7 +20,7 @@ class Post_Handler {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.0.0';
+	const VERSION = '1.1.0';
 
 	/**
 	 * Stores the base slug for the plugin.
@@ -131,9 +131,34 @@ class Post_Handler {
 			! isset( $data['posttype'] )
 			|| ! in_array( $data['posttype'], $this->get_supported_post_types( false ), true )
 		) {
-			$this->add_to_log( "Not supported post type. Skipping." );
+			$msg = "Not supported post type. ";
 
-			return false;
+			/**
+			 * A filter to allow forcing the import even if post type is not supported or not set.
+			 *
+			 * @since 1.1.0
+			 *
+			 * @param bool $continue Whether the import should be forced to continue. Default: false.
+			 */
+			$continue = apply_filters( 'tec_labs_wpai_is_post_type_set', false );
+
+			$msg .= $continue ? '`tec_labs_wpai_is_post_type_set` override in place, post will be imported.' : 'Skipping.' ;
+			$this->add_to_log( $msg );
+
+			// Bail, if there is no override for the non-supported post type.
+			if ( ! $continue ) {
+				return false;
+			}
+
+			/**
+			 * A filter to allow changing the default post type if there is none set.
+			 * This helps avoid warnings and errors.
+			 *
+			 * @since 1.1.0
+			 *
+			 * @param string $default_post_type The post type to be used when there is none set in the source.
+			 */
+			$data['posttype'] = apply_filters('tec_labs_wpai_default_post_type', $data['posttype'] ?? 'wpai_post' );
 		}
 
 		// Bail if data is not valid.
@@ -483,7 +508,7 @@ class Post_Handler {
 				wp_delete_post( $post_id, true );
 				$this->add_to_log( "Post (ID: " . $post_id . ") deleted." );
 			} else {
-				$this->add_to_log( "Post (ID: " . $post_id . ") will be imported based on filter." );
+				$this->add_to_log( "`tec_labs_wpai_delete_mismatching_post_type` override in place. Post (ID: " . $post_id . ") will be imported." );
 			}
 		}
 
@@ -1130,7 +1155,7 @@ class Post_Handler {
 	 *
 	 * Allows filtering the list of meta keys that, when modified, should trigger an update to the custom tables’ data.
 	 *
-	 * @since   1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param array $tracked_keys Array of the tracked keys.
 	 *
