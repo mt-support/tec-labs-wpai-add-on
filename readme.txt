@@ -41,6 +41,7 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 * Feature - Add the `tec_labs_wpai_is_post_type_set` filter to allow force importing when the post type is not defined in the source.
 * Tweak - Add more details to some log messages.
+* Tweak - Adjust error logging to better handle special characters in log messages. (Props to Rob Gabaree.)
 
 = [1.0.0] 2023-10-17 =
 
