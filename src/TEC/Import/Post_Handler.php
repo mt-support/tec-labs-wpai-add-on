@@ -935,6 +935,31 @@ class Post_Handler {
 		}
 	}
 
+	function relink_posts_to_series( $value, $post_id, $key, $original_value, $existing_meta_keys, $import_id ) {
+		// Bail if not series.
+		if ( get_post_type( $post_id ) !== 'tribe_event_series' ) {
+			return $value;
+		}
+	
+		// Bail if not the correct meta key.
+		if ( $key !== 'posts_in_series' ) {
+			return $value;
+		}
+	
+		// Explode the value which are the post IDs
+		$post_ids = explode( ',', $value );
+		// Get the Series post object
+		$series = get_post( $post_id );
+	
+		// Get the relationship class
+		$relationship = new \TEC\Events_Pro\Custom_Tables\V1\Series\Relationship();
+		$relink = $relationship->with_series($series, $post_ids);
+		
+		// Return, maybe empty.
+		// @todo Skip saving this meta.
+		return "";
+	}
+
 	/**
 	 * Retrieve post ID based on meta key = meta value pair.
 	 *
