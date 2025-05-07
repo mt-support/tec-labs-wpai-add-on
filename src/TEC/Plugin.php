@@ -136,7 +136,7 @@ class Plugin extends Service_Provider {
 		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
 		add_action( 'pmxi_update_post_meta', [ $this, 'maybe_skip_post_meta' ], 10, 3 );
 		add_action( 'pmxi_saved_post', [ $this, 'maybe_update_post' ], 10, 3 );
-
+		add_filter( 'pmxi_custom_field', [ $this, 'relink_posts_to_series' ], 10, 6 );
 		// Clean ourselves up after hooks.
 		remove_action( 'pmxi_before_post_import', [ $this, 'init_import_hooks' ] );
 	}
@@ -221,6 +221,10 @@ class Plugin extends Service_Provider {
 		$this->container->make( Post_Handler::class )->maybe_update_post( $post_id, $xml_node, $is_update );
 	}
 
+	public function relink_posts_to_series( $value, $post_id, $key, $original_value, $existing_meta_keys, $import_id ) {
+		return $this->container->make( Post_Handler::class )->relink_posts_to_series( $value, $post_id, $key, $original_value, $existing_meta_keys, $import_id );
+	}
+	
 	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect eCommerce provider.
 	 *

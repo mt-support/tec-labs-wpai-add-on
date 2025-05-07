@@ -968,16 +968,15 @@ class Post_Handler {
 		// Grab the new post IDs based on the hash.
 		$new_post_ids = array_filter( array_map( function( $post_id ) {
 			$hash = $this->hashit( $post_id );
-			return $this->get_post_id_from_meta( '_tec_events_export_hash', $hash );
+			return $this->get_post_id_from_meta( '_tribe_events_export_hash', $hash );
 		}, $post_ids ) );
 
 		// Get the relationship class and relink the posts.
 		$relationship = new \TEC\Events_Pro\Custom_Tables\V1\Series\Relationship();
 		$relink = $relationship->with_series( $series, $new_post_ids );
 		
-		// Return, maybe empty.
-		// @todo Skip saving this meta.
-		return "";
+		// We return an empty string to prevent meta saving.
+		return '';
 	}
 
 	/**
