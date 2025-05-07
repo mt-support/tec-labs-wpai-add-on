@@ -935,7 +935,21 @@ class Post_Handler {
 		}
 	}
 
-	function relink_posts_to_series( $value, $post_id, $key, $original_value, $existing_meta_keys, $import_id ) {
+	/**
+	 * Relinks posts to a series during import.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param mixed  $value              The meta value to be imported
+	 * @param int    $post_id           The ID of the post being imported
+	 * @param string $key               The meta key being processed
+	 * @param mixed  $original_value    The original meta value before processing
+	 * @param array  $existing_meta_keys Existing meta keys for the post
+	 * @param int    $import_id         The ID of the current import
+	 *
+	 * @return string Empty string to prevent meta saving, or original value if conditions not met
+	 */
+	public function relink_posts_to_series( $value, $post_id, $key, $original_value, $existing_meta_keys, $import_id ) {
 		// Bail if not series.
 		if ( get_post_type( $post_id ) !== 'tribe_event_series' ) {
 			return $value;
