@@ -640,16 +640,16 @@ class Post_Handler {
 	 * Sample:
 	 *
 	 * $data = [
-	 * 'create_hash'     => true,
-	 * 'origin_meta_key' => '_TCOrderOrigin',
-	 * 'connections'     => [
-	 * 0 => [
-	 * 'multiple'            => false,
-	 * 'record_meta_key'     => '_tec_tc_order_events_in_order',
-	 * 'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different from record_meta_key
-	 * 'linked_post_type'    => 'tribe_events',
-	 * ],
-	 * ],
+	 * 		'create_hash'     => true,
+	 * 		'origin_meta_key' => '_TCOrderOrigin',
+	 * 		'connections'     => [
+	 * 			0 => [
+	 * 				'multiple'            => false,
+	 * 				'record_meta_key'     => '_tec_tc_order_events_in_order',
+	 * 				'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different from record_meta_key
+	 * 				'linked_post_type'    => 'tribe_events',
+	 * 			],
+	 * 		],
 	 * ];
 	 *
 	 * @param array  $data      Data defining the connections and what needs to be updated.
@@ -1049,6 +1049,9 @@ class Post_Handler {
 
 	/**
 	 * Get the post types supported by the extension.
+	 * 
+	 * @since 1.0.0
+	 * @since 1.2.0 Add Series as supported post type.
 	 *
 	 * @param bool $with_connection Whether it is only the post types that require a connection (true) or all post
 	 *                              types (false).
@@ -1071,7 +1074,8 @@ class Post_Handler {
 				$supported_post_types,
 				'tribe_events',
 				'tribe_venue',
-				'tribe_organizer'
+				'tribe_organizer',
+				'tribe_event_series',
 			);
 		}
 
