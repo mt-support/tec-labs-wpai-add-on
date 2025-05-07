@@ -960,17 +960,18 @@ class Post_Handler {
 			return $value;
 		}
 	
-		// Explode the value which are the post IDs
+		// Explode the value which are the post IDs.
 		$post_ids = explode( ',', $value );
 		// Get the Series post object
 		$series = get_post( $post_id );
 
+		// Grab the new post IDs based on the hash.
 		$new_post_ids = array_filter( array_map( function( $post_id ) {
 			$hash = $this->hashit( $post_id );
 			return $this->get_post_id_from_meta( '_tec_events_export_hash', $hash );
 		}, $post_ids ) );
 
-		// Get the relationship class
+		// Get the relationship class and relink the posts.
 		$relationship = new \TEC\Events_Pro\Custom_Tables\V1\Series\Relationship();
 		$relink = $relationship->with_series( $series, $new_post_ids );
 		
