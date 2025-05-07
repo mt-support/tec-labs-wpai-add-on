@@ -964,10 +964,15 @@ class Post_Handler {
 		$post_ids = explode( ',', $value );
 		// Get the Series post object
 		$series = get_post( $post_id );
-	
+
+		$new_post_ids = array_filter( array_map( function( $post_id ) {
+			$hash = $this->hashit( $post_id );
+			return $this->get_post_id_from_meta( '_tec_events_export_hash', $hash );
+		}, $post_ids ) );
+
 		// Get the relationship class
 		$relationship = new \TEC\Events_Pro\Custom_Tables\V1\Series\Relationship();
-		$relink = $relationship->with_series($series, $post_ids);
+		$relink = $relationship->with_series( $series, $new_post_ids );
 		
 		// Return, maybe empty.
 		// @todo Skip saving this meta.
