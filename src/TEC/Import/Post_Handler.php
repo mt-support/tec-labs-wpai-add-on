@@ -142,7 +142,7 @@ class Post_Handler {
 			 */
 			$continue = apply_filters( 'tec_labs_wpai_is_post_type_set', false );
 
-			$msg .= $continue ? '`tec_labs_wpai_is_post_type_set` override in place, post will be imported.' : 'Skipping.' ;
+			$msg .= $continue ? '`tec_labs_wpai_is_post_type_set` override in place, post will be imported.' : 'Skipping.';
 			$this->add_to_log( $msg );
 
 			// Bail, if there is no override for the non-supported post type.
@@ -158,7 +158,7 @@ class Post_Handler {
 			 *
 			 * @param string $default_post_type The post type to be used when there is none set in the source.
 			 */
-			$data['posttype'] = apply_filters('tec_labs_wpai_default_post_type', $data['posttype'] ?? 'wpai_post' );
+			$data['posttype'] = apply_filters( 'tec_labs_wpai_default_post_type', $data['posttype'] ?? 'wpai_post' );
 		}
 
 		// Bail if data is not valid.
@@ -370,7 +370,7 @@ class Post_Handler {
 		$hash_meta_key = '_' . $link['linked_post_type'] . '_export_hash';
 
 		// Check if meta key exists.
-		if ( ! isset ( $data[ $link['meta_key'] ] ) ) {
+		if ( ! isset( $data[ $link['meta_key'] ] ) ) {
 			$this->add_to_log(
 			// Translators: 1) Title of the post being imported.
 				sprintf(
@@ -493,7 +493,7 @@ class Post_Handler {
 	 */
 	function maybe_update_post( int $post_id, $xml_node, bool $is_update ): void {
 		// Convert SimpleXml object to array for easier use.
-		$record = json_decode( json_encode( ( array ) $xml_node ), 1 );
+		$record = json_decode( json_encode( (array) $xml_node ), 1 );
 
 		// Grab the post type of the post being imported.
 		$post_type = get_post_type( $post_id );
@@ -640,16 +640,16 @@ class Post_Handler {
 	 * Sample:
 	 *
 	 * $data = [
-	 * 		'create_hash'     => true,
-	 * 		'origin_meta_key' => '_TCOrderOrigin',
-	 * 		'connections'     => [
-	 * 			0 => [
-	 * 				'multiple'            => false,
-	 * 				'record_meta_key'     => '_tec_tc_order_events_in_order',
-	 * 				'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different from record_meta_key
-	 * 				'linked_post_type'    => 'tribe_events',
-	 * 			],
-	 * 		],
+	 *        'create_hash'     => true,
+	 *        'origin_meta_key' => '_TCOrderOrigin',
+	 *        'connections'     => [
+	 *            0 => [
+	 *                'multiple'            => false,
+	 *                'record_meta_key'     => '_tec_tc_order_events_in_order',
+	 *                'connection_meta_key' => '_tec_tc_order_events_in_order',  // optional, if different from record_meta_key
+	 *                'linked_post_type'    => 'tribe_events',
+	 *            ],
+	 *        ],
 	 * ];
 	 *
 	 * @param array  $data      Data defining the connections and what needs to be updated.
@@ -678,7 +678,7 @@ class Post_Handler {
 		}
 
 		// 3. Update all the links between the post types.
-		if ( ! empty ( $data['connections'] ) ) {
+		if ( ! empty( $data['connections'] ) ) {
 
 			foreach ( $data['connections'] as $connection ) {
 				$this->update_post_type_connections( $connection, $record, $post_id, $post_title, $post_type );
@@ -745,7 +745,7 @@ class Post_Handler {
 
 		// If the given meta key has a value in the record, and it is a string, do it.
 		if (
-			! empty ( $record[ $record_meta_key ] )
+			! empty( $record[ $record_meta_key ] )
 			&& is_string( $record[ $record_meta_key ] )
 		) {
 			// If there are multiple connections, e.g. more organizers for an event.
@@ -757,7 +757,7 @@ class Post_Handler {
 					$record[ $record_meta_key ] = $id;
 					$update_successful          = $this->update_linked_post_meta(
 						$connection['linked_post_type'],
-						! empty ( $connection['connection_meta_key'] ) ? $connection['connection_meta_key'] : $record_meta_key,
+						! empty( $connection['connection_meta_key'] ) ? $connection['connection_meta_key'] : $record_meta_key,
 						$post_id,
 						$record,
 						$multiple
@@ -941,11 +941,11 @@ class Post_Handler {
 	 * @since 1.2.0
 	 *
 	 * @param mixed  $value              The meta value to be imported
-	 * @param int    $post_id           The ID of the post being imported
-	 * @param string $key               The meta key being processed
-	 * @param mixed  $original_value    The original meta value before processing
+	 * @param int    $post_id            The ID of the post being imported
+	 * @param string $key                The meta key being processed
+	 * @param mixed  $original_value     The original meta value before processing
 	 * @param array  $existing_meta_keys Existing meta keys for the post
-	 * @param int    $import_id         The ID of the current import
+	 * @param int    $import_id          The ID of the current import
 	 *
 	 * @return string Empty string to prevent meta saving, or original value if conditions not met
 	 */
@@ -954,27 +954,31 @@ class Post_Handler {
 		if ( get_post_type( $post_id ) !== 'tribe_event_series' ) {
 			return $value;
 		}
-	
+
 		// Bail if not the correct meta key.
 		if ( $key !== 'posts_in_series' ) {
 			return $value;
 		}
-	
+
 		// Explode the value which are the post IDs.
 		$post_ids = explode( ',', $value );
 		// Get the Series post object
 		$series = get_post( $post_id );
 
+		$this->add_to_log( "Fetching new post IDs for the Series..." );
+
 		// Grab the new post IDs based on the hash.
-		$new_post_ids = array_filter( array_map( function( $post_id ) {
+		$new_post_ids = array_filter( array_map( function ( $post_id ) {
 			$hash = $this->hashit( $post_id );
+
 			return $this->get_post_id_from_meta( '_tribe_events_export_hash', $hash );
 		}, $post_ids ) );
 
+		$this->add_to_log( "Relinking posts to the Series..." );
 		// Get the relationship class and relink the posts.
 		$relationship = new \TEC\Events_Pro\Custom_Tables\V1\Series\Relationship();
-		$relink = $relationship->with_series( $series, $new_post_ids );
-		
+		$relationship->with_series( $series, $new_post_ids );
+
 		// We return an empty string to prevent meta saving.
 		return '';
 	}
@@ -1093,7 +1097,7 @@ class Post_Handler {
 
 	/**
 	 * Get the post types supported by the extension.
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @since 1.2.0 Add Series as supported post type.
 	 *
@@ -1203,15 +1207,16 @@ class Post_Handler {
 	 *
 	 * Allows filtering the list of meta keys that, when modified, should trigger an update to the custom tables’ data.
 	 *
-	 * @since 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @see     https://docs.theeventscalendar.com/reference/hooks/tec_events_custom_tables_v1_tracked_meta_keys/
+	 *
+	 * @see     \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
 	 *
 	 * @param array $tracked_keys Array of the tracked keys.
 	 *
 	 * @return array
 	 *
-	 * @see     https://docs.theeventscalendar.com/reference/hooks/tec_events_custom_tables_v1_tracked_meta_keys/
-	 *
-	 * @see     \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
 	 */
 	public function modify_tracked_meta_keys( array $tracked_keys ): array {
 		$tracked_keys[] = '_EventOrigin';
