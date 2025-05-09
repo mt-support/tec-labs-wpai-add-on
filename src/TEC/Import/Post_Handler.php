@@ -126,13 +126,11 @@ class Post_Handler {
 	public function maybe_create_post( bool $continue_import, array $data, int $import_id ): bool {
 		$this->add_to_log( "<strong>THE EVENTS CALENDAR EXTENSION: WPAI ADD-ON:</strong>" );
 
-		// Bail if it's not a supported post type.
+		// Bail if it's not a supported post type and return to the main import process.
 		if (
 			! isset( $data['posttype'] )
 			|| ! in_array( $data['posttype'], $this->get_supported_post_types( false ), true )
 		) {
-			$msg = "Not supported post type. ";
-
 			/**
 			 * A filter to allow forcing the import even if post type is not supported or not set.
 			 *
@@ -140,15 +138,15 @@ class Post_Handler {
 			 *
 			 * @param bool $continue Whether the import should be forced to continue. Default: false.
 			 */
-			$continue = apply_filters( 'tec_labs_wpai_is_post_type_set', false );
+			$continue = apply_filters_deprecated(
+				'tec_labs_wpai_is_post_type_set',
+				[ false ],
+				'1.2.0',
+				'',
+				'This filter has been deprecated without replacement. The import process continues automatically.'
+			);
 
-			$msg .= $continue ? '`tec_labs_wpai_is_post_type_set` override in place, post will be imported.' : 'Skipping.';
-			$this->add_to_log( $msg );
-
-			// Bail, if there is no override for the non-supported post type.
-			if ( ! $continue ) {
-				return false;
-			}
+			$this->add_to_log( 'Not a TEC post type or post type not set. Skipping TEC subprocess.' );
 
 			/**
 			 * A filter to allow changing the default post type if there is none set.
@@ -159,6 +157,8 @@ class Post_Handler {
 			 * @param string $default_post_type The post type to be used when there is none set in the source.
 			 */
 			$data['posttype'] = apply_filters( 'tec_labs_wpai_default_post_type', $data['posttype'] ?? 'wpai_post' );
+
+			return true;
 		}
 
 		// Bail if data is not valid.
