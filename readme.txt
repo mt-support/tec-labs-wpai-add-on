@@ -37,10 +37,12 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
-= [1.2.0] 2025-05-09 =
+= [1.2.0] TBD =
 
+* Version - Events Calendar Pro TBD or higher is required for the migration of Series.
 * Feature - Add support for Event Series and Recurring Events
 * Fix - Ensure other non-TEC post types can be imported when the extension is active.
+* Deprecated - Deprecated the `tec_labs_wpai_is_post_type_set` filter without replacement.
 
 = [1.1.0] 2024-09-12 =
 

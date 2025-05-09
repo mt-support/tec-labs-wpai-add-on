@@ -135,6 +135,7 @@ class Post_Handler {
 			 * A filter to allow forcing the import even if post type is not supported or not set.
 			 *
 			 * @since 1.1.0
+			 * @since 1.2.0 Deprecated without replacement.
 			 *
 			 * @param bool $continue Whether the import should be forced to continue. Default: false.
 			 */
