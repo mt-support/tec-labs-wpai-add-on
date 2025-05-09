@@ -949,19 +949,19 @@ class Post_Handler {
 	 *
 	 * @return string Empty string to prevent meta saving, or original value if conditions not met
 	 */
-	public function relink_posts_to_series( $value, $post_id, $key, $original_value, $existing_meta_keys, $import_id ) {
+	public function relink_posts_to_series( $meta_value, $post_id, $meta_key, $original_value, $existing_meta_keys, $import_id ) {
 		// Bail if not series.
 		if ( get_post_type( $post_id ) !== 'tribe_event_series' ) {
-			return $value;
+			return $meta_value;
 		}
 
 		// Bail if not the correct meta key.
-		if ( $key !== 'posts_in_series' ) {
-			return $value;
+		if ( $meta_key !== 'posts_in_series' ) {
+			return $meta_value;
 		}
 
 		// Explode the value which are the post IDs.
-		$post_ids = explode( ',', $value );
+		$post_ids = explode( ',', $meta_value );
 		// Get the Series post object
 		$series = get_post( $post_id );
 
