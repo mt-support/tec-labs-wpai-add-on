@@ -40,6 +40,7 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 = [1.2.0] 2025-05-09 =
 
 * Feature - Add support for Event Series and Recurring Events
+* Fix - Ensure other non-TEC post types can be imported when the extension is active.
 
 = [1.1.0] 2024-09-12 =
 
