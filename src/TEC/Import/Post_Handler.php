@@ -976,9 +976,18 @@ class Post_Handler {
 		}, $post_ids ) );
 
 		$this->add_to_log( "Relinking posts to the Series..." );
+		
 		// Get the relationship class and relink the posts.
 		$relationship = new \TEC\Events_Pro\Custom_Tables\V1\Series\Relationship();
 		$relationship->with_series( $series, $new_post_ids );
+
+		// Clean the post cache for the new posts.
+		foreach ( $new_post_ids as $new_post_id ) {
+			clean_post_cache( $new_post_id );
+		}
+
+		// Clean the post cache for the Series.
+		clean_post_cache( $post_id );
 
 		// We return an empty string to prevent meta saving.
 		return '';
