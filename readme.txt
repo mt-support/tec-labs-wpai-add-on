@@ -37,7 +37,7 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
-= [1.2.0] TBD =
+= [1.2.0] 2025-07-03 =
 
 * Version - Events Calendar Pro 7.6.1 or higher is required for the migration of Series.
 * Feature - Add support for Event Series and Recurring Events
