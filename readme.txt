@@ -2,10 +2,10 @@
 Contributors: theeventscalendar
 Donate link: https://evnt.is/29
 Tags: events, calendar
-Requires at least: 5.8.6
-Tested up to: 6.3.2
+Requires at least: 6.6
+Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,13 @@ Please visit our [extension library](https://theeventscalendar.com/extensions/) 
 We're always interested in your feedback and our [Help Desk](https://support.theeventscalendar.com/) are the best place to flag any issues. Do note, however, that the degree of support we provide for extensions like this one tends to be very limited.
 
 == Changelog ==
+
+= [1.2.0] TBD =
+
+* Version - Events Calendar Pro 7.6.1 or higher is required for the migration of Series.
+* Feature - Add support for Event Series and Recurring Events
+* Fix - Ensure other non-TEC post types can be imported when the extension is active.
+* Deprecated - Deprecated the `tec_labs_wpai_is_post_type_set` filter without replacement.
 
 = [1.1.0] 2024-09-12 =
 

@@ -27,7 +27,7 @@ class Plugin extends Service_Provider {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.1.0';
+	const VERSION = '1.2.0';
 
 	/**
 	 * @since 1.0.0
@@ -136,7 +136,7 @@ class Plugin extends Service_Provider {
 		add_filter( 'wp_all_import_is_post_to_create', [ $this, 'maybe_create_post' ], 10, 3 );
 		add_action( 'pmxi_update_post_meta', [ $this, 'maybe_skip_post_meta' ], 10, 3 );
 		add_action( 'pmxi_saved_post', [ $this, 'maybe_update_post' ], 10, 3 );
-
+		add_filter( 'pmxi_custom_field', [ $this, 'relink_posts_to_series' ], 10, 6 );
 		// Clean ourselves up after hooks.
 		remove_action( 'pmxi_before_post_import', [ $this, 'init_import_hooks' ] );
 	}
@@ -149,8 +149,8 @@ class Plugin extends Service_Provider {
 	public function init_label_hooks() {
 		if ( isset( $_GET['page'] ) &&
 		     (
-				$_GET['page'] == 'pmxe-admin-export'
-				|| $_GET['page'] == 'pmxi-admin-import'
+			     $_GET['page'] == 'pmxe-admin-export'
+			     || $_GET['page'] == 'pmxi-admin-import'
 		     )
 		) {
 			add_filter( 'tec_tickets_commerce_attendee_post_type_args', [ $this, 'tc_attendees_label' ] );
@@ -222,6 +222,29 @@ class Plugin extends Service_Provider {
 	}
 
 	/**
+	 * Relinks posts to series during import.
+	 *
+	 * This filter is called by WP All Import when importing post meta values. It allows modifying
+	 * the meta value before it is saved.
+	 * 
+	 * @since 1.2.0
+	 *
+	 * @see https://www.wpallimport.com/documentation/filter-reference/#pmxi_custom_field
+	 *
+	 * @param mixed  $value              The meta value to be imported
+	 * @param int    $post_id            The ID of the post being imported
+	 * @param string $key                The meta key being imported
+	 * @param mixed  $original_value     The original meta value before any modifications
+	 * @param array  $existing_meta_keys Array of existing meta keys
+	 * @param int    $import_id          The ID of the current import
+	 *
+	 * @return mixed The modified meta value
+	 */
+	public function relink_posts_to_series( $meta_value, $post_id, $meta_key, $original_value, $existing_meta_keys, $import_id ) {
+		return $this->container->make( Post_Handler::class )->relink_posts_to_series( $meta_value, $post_id, $meta_key, $original_value, $existing_meta_keys, $import_id );
+	}
+
+	/**
 	 * Adjust the label for Tickets Commerce Attendees to reflect eCommerce provider.
 	 *
 	 * @see https://docs.theeventscalendar.com/reference/hooks/tec_tickets_commerce_attendee_post_type_args/
@@ -280,15 +303,16 @@ class Plugin extends Service_Provider {
 	 *
 	 * Allows filtering the list of meta keys that, when modified, should trigger an update to the custom tables’ data.
 	 *
-	 * @since 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @see     https://docs.theeventscalendar.com/reference/hooks/tec_events_custom_tables_v1_tracked_meta_keys/
+	 *
+	 * @see     \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
 	 *
 	 * @param array $tracked_keys Array of the tracked keys.
 	 *
 	 * @return array
 	 *
-	 * @see     https://docs.theeventscalendar.com/reference/hooks/tec_events_custom_tables_v1_tracked_meta_keys/
-	 *
-	 * @see     \TEC\Events\Custom_Tables\V1\Updates\Meta_Watcher::get_tracked_meta_keys()
 	 */
 	public function modify_tracked_meta_keys( array $tracked_keys ): array {
 		return $this->container->make( Post_Handler::class )->modify_tracked_meta_keys( $tracked_keys );
