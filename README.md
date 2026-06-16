@@ -79,7 +79,11 @@ Here is the order in which the post types have to be imported. If you are not mi
 _We are going to assume that The Events Calendar and WP All Export (free or Pro) are installed and activated on the source site. For exporting Series, Events Calendar Pro is needed as well._
 
 1. On the WordPress dashboard, head over to **WP Export > New Export**.
-2. Choose "Specific Post Type" and, from the dropdown, select the post type you want to export. [image 01]
+
+
+2. Choose "Specific Post Type" and, from the dropdown, select the post type you want to export. ![image 01](https://github.com/user-attachments/assets/5ec14c5a-952f-4603-9d3c-e14b61aa8fb6)*Screenshot: Steps 1 and 2 of the export process. Go to WP Export > New Export and select the post type*
+
+
 3. After choosing the post type, you will see a notification showing how many will be exported.
 
 If you have WP All Export Pro, then continue with the **Pro** steps below (section 4.1.1). If you only have the free version, skip to [4.1.2 Exporting with WP All Export Free](#exporting-with-wp-all-export-free).
@@ -91,14 +95,20 @@ If you have WP All Export Pro, then continue with the **Pro** steps below (secti
 WP All Export Pro does most of the heavy lifting for you, automatically adding all necessary data to the export file.
 
 4. With WP All Export Pro installed, you can add further filtering options to export only posts with specific properties.
-5. Click on the blue **Migrate** button to proceed to the last step before the export. [image 02]
+
+
+5. Click on the blue **Migrate** button to proceed to the last step before the export. ![image 02](https://github.com/user-attachments/assets/b813cca0-4233-47ad-9fc3-5572f2ad5293)*Screenshot: Steps 3 to 5 of the export process with WP All Export Pro. Choose the post type, fine-tune the selection, and click Migrate*
+
+
 6. Skip ahead to [4.1.3. Final Export Steps](#final-export-steps).
 
 #### 4.1.2. Exporting with WP All Export Free
 
 With the free version of WP All Export, you need to manually select all the data you want included in the export.
 
-4. Click on the **Customize Export File** button to advance to the next step. [image 03]
+4. Click on the **Customize Export File** button to advance to the next step. ![image 03](https://github.com/user-attachments/assets/7e66b641-536a-4f08-8beb-c254351825a5)*Screenshot: When using the free version of WP All Export you have to customize the export file*
+
+
 5. In the Drag & Drop step, select the data you want exported. On the right side of the screen, there is a column called "Available Data", divided into different sections. Open each section and drag the items into the frame on the left. The following must be included for a successful migration:
    - **Standard** – All
    - **Media**
@@ -108,21 +118,30 @@ With the free version of WP All Export, you need to manually select all the data
    - **Custom Fields** – All (without this, events will be missing crucial data like start and end date)
    - **Other** – All
 
+
 6. **When exporting Series**, you must also add one more field containing the events linked to the Series:
    - Click on the **Add Field** button.
    - Add `posts_in_series` as the Column name.
-   - Leave the other fields unchanged and click **Save**. [image 04]
+   - Leave the other fields unchanged and click **Save**. ![image 04](https://github.com/user-attachments/assets/7c3ebacc-04b3-4f0c-8557-bdcc330222f6)*Screenshot: Adding a custom field for "posts_in_series"*
 
-   After saving, clicking **Preview** should show a column named `posts_in_series` populated with post IDs. [image 05]
 
-7. At the bottom of this screen, you can save the setup as a template, or load an existing one. [image 06] When done, click **Continue**.
+   After saving, clicking **Preview** should show a column named `posts_in_series` populated with post IDs. ![image 05](https://github.com/user-attachments/assets/09365fd4-e769-46fd-81c9-a1dc09ac7c1c)*Screenshot: The export preview highlighting the manually added column*
+
+
+7. At the bottom of this screen, you can save the setup as a template, or load an existing one. ![image 06](https://github.com/user-attachments/assets/59d16df7-dc13-4273-9d4c-3cd47849e4f1)*Screenshot: Drag & Drop the fields you want to export and save or load a template*
+
+When done, click **Continue**.
 
 #### 4.1.3. Final Export Steps
 _This is where the Free and Pro paths merge..._
 
 8. On the Export Settings page, you can configure advanced settings to customize your export further. These are mostly useful for repeated or scheduled exports. For a one-time migration, no changes are needed here.
-9. Click the green **Confirm & Run Export** button (top right) or the blue **Save & Run Export** button (bottom of screen) to start the export. [image 07]
-10. When the export reaches 100%, download the data by clicking the blue **Bundle** button to save a `.zip` file to your PC. [image 08]
+
+
+9. Click the green **Confirm & Run Export** button (top right) or the blue **Save & Run Export** button (bottom of screen) to start the export. ![image 07](https://github.com/user-attachments/assets/1a18a3f3-7520-4e73-b515-dee0c422b6bf)*Screenshot: Steps 6 and 7 of the export process. You can optionally set up scheduling and then click on "Run Export"*
+
+
+10. When the export reaches 100%, download the data by clicking the blue **Bundle** button to save a `.zip` file to your PC. ![image 08](https://github.com/user-attachments/assets/b48e6daf-4b59-4937-8b94-36407337cddf)*Screenshot: Step 8 of the export process. When the export is done, click on "Bundle" to download the data to your PC*
 
 The export for this post type is done. Repeat the above steps for all post types you would like to migrate.
 
@@ -135,17 +154,32 @@ _We will assume that The Events Calendar, WP All Import Pro, and this extension 
 When importing, pay close attention to the **order of import** described in [3.2. The order of importing data](#the-order-of-importing-data) above.
 
 1. On the WordPress dashboard, head over to **All Import > New Import**.
+
+
 2. Choose **Upload a file** and select the bundle `.zip` file you downloaded. If the file has been uploaded before and you are re-running the import, you can select "Use existing file" instead.
-3. WP All Import will upload the file and try to select the right post type automatically. If the relevant plugin is not activated, WP All Import will not recognize the post type and the import will not work as expected. [image 09]
+
+
+3. WP All Import will upload the file and try to select the right post type automatically. If the relevant plugin is not activated, WP All Import will not recognize the post type and the import will not work as expected. ![image 09](https://github.com/user-attachments/assets/09ba3754-f39b-45ac-a799-02f496ef5111)*Screenshot: Steps 1 to 4 of the import process. Go to All Import > New import and upload the bundle file. Click on "Skip to step 4"*
 
 > **If you are importing a Series, jump to [4.3 Importing a Series](#importing-a-series) section below.**
 
 4. Click the grey **Skip to step 4** button to go to the import settings page.
    - Alternatively, click **Continue to Step 2** to review your import file and optionally filter which posts to import.
    - In Step 3, you can map the incoming data elements to the correct post fields.
-5. On the Import Settings page, verify the **Unique Identifier** field is set to `{id[1]}`. There are other settings available to fine-tune the import, but for a full migration nothing more is needed. Click **Continue**. [image 10]
-6. On the confirmation page, double-check the import summary, then click the green **Confirm & Run Import** button. [image 11]
-7. On the next screen, follow the progress of the import. The import finishes successfully when you see **"Import Complete!"** [image 12][image 13]
+
+
+5. On the Import Settings page, verify the **Unique Identifier** field is set to `{id[1]}`. There are other settings available to fine-tune the import, but for a full migration nothing more is needed. Click **Continue**. ![image 10](https://github.com/user-attachments/assets/fc8493c6-0517-44bf-8ab5-66a33bc7f981)*Screenshot: Step 5 of the import process. Verify the unique identifier, then click on “Continue”*
+
+
+6. On the confirmation page, double-check the import summary, then click the green **Confirm & Run Import** button. ![image 11](https://github.com/user-attachments/assets/9777d587-3c97-401a-97ec-fc0304cbb776)*Screenshot: Step 6 of the import process. Double-check, then confirm and run*
+
+
+7. On the next screen, follow the progress of the import. The import finishes successfully when you see **"Import Complete!"** ![image 12](https://github.com/user-attachments/assets/ecd4c537-2aa8-4f9a-8cf2-152f3508b9f4)*Screenshot: Step 7 of the import process. Sit back, relax, and wait for the import to finish.*
+
+   _
+   ![image 13](https://github.com/user-attachments/assets/e3e5aeda-be91-4843-9ff0-5f08fa50c920)*Screenshot: Import Complete!*
+
+
 8. To verify that your import succeeded, review the new events under **Events > All Events**.
 
 The import for this post type is done. Repeat the above steps for all post types you would like to import, following the correct order.
@@ -159,18 +193,30 @@ The import for this post type is done. Repeat the above steps for all post types
 Follow steps 1–3 of the [4.2. Importing the data](#importing-the-data) section above, then continue here.
 
 4. After uploading the file, click **Continue to Step 2**.
+
+
 5. If you want to import all the data, click **Continue to Step 3**.
+
+
 6. In Step 3, map the post IDs connected to the Series:
    - Open the **Custom Fields** section and click **Add Custom Field** at the bottom.
    - In the right column, find `posts_in_series` and drag it into the **value** field. It should populate the value `{posts_in_series[1]}`.
    - In the **Name** field enter `posts_in_series`.
-   - Click **Continue to Step 4**. [image 14]
+   - Click **Continue to Step 4**. ![image 14](https://github.com/user-attachments/assets/8d7a2226-9a4b-4682-8fe3-95519ccaaf7d)*Screenshot: Adding the custom field to import Series data*
+
+
 7. In Step 4, verify the **Unique Identifier** field:
    - Clear the field.
    - Drag and drop `id` from the right column into the field. It should add the value `{id[1]}`.
-   - Click **Continue**. [image 15]
+   - Click **Continue**. ![image 15](https://github.com/user-attachments/assets/50edf4d1-b361-4033-be51-c71c00950462)*Screenshot: Making sure the Unique Identifier is the correct one*
+
+
 8. On the confirmation page, double-check the import summary, then click the green **Confirm & Run Import** button.
+
+
 9. Follow the progress of the import. The import finishes successfully when you see **"Import Complete!"**
+
+
 10. If all went well, all Series should be imported with all recurring events assigned to them, as they were on the source site.
 
 ---
