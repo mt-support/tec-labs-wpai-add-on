@@ -86,7 +86,7 @@ _We are going to assume that The Events Calendar and WP All Export (free or Pro)
 
 3. After choosing the post type, you will see a notification showing how many will be exported.
 
-If you have WP All Export Pro, then continue with the **Pro** steps below (section 4.1.1). If you only have the free version, skip to [4.1.2 Exporting with WP All Export Free](#exporting-with-wp-all-export-free).
+If you have WP All Export Pro, then continue with the **Pro** steps below (section 4.1.1). If you only have the free version, skip to [4.1.2 Exporting with WP All Export Free](#412-exporting-with-wp-all-export-free).
 
 > **Important!** Migrating the Series post type requires some manual steps, so you need to follow the steps of the free version even if you have Pro.
 
@@ -100,7 +100,7 @@ WP All Export Pro does most of the heavy lifting for you, automatically adding a
 5. Click on the blue **Migrate** button to proceed to the last step before the export. ![image 02](https://github.com/user-attachments/assets/b813cca0-4233-47ad-9fc3-5572f2ad5293)*Screenshot: Steps 3 to 5 of the export process with WP All Export Pro. Choose the post type, fine-tune the selection, and click Migrate*
 
 
-6. Skip ahead to [4.1.3. Final Export Steps](#final-export-steps).
+6. Skip ahead to [4.1.3. Final Export Steps](#413-final-export-steps).
 
 #### 4.1.2. Exporting with WP All Export Free
 
@@ -151,7 +151,7 @@ The export for this post type is done. Repeat the above steps for all post types
 
 _We will assume that The Events Calendar, WP All Import Pro, and this extension are installed and activated on the destination site. For importing Series, Events Calendar Pro is needed as well._
 
-When importing, pay close attention to the **order of import** described in [3.2. The order of importing data](#the-order-of-importing-data) above.
+When importing, pay close attention to the **order of import** described in [3.2. The order of importing data](#32-the-order-of-importing-data) above.
 
 1. On the WordPress dashboard, head over to **All Import > New Import**.
 
@@ -161,7 +161,7 @@ When importing, pay close attention to the **order of import** described in [3.2
 
 3. WP All Import will upload the file and try to select the right post type automatically. If the relevant plugin is not activated, WP All Import will not recognize the post type and the import will not work as expected. ![image 09](https://github.com/user-attachments/assets/09ba3754-f39b-45ac-a799-02f496ef5111)*Screenshot: Steps 1 to 4 of the import process. Go to All Import > New import and upload the bundle file. Click on "Skip to step 4"*
 
-> **If you are importing a Series, jump to [4.3 Importing a Series](#importing-a-series) section below.**
+> **If you are importing a Series, jump to [4.3 Importing a Series](#43-importing-a-series) section below.**
 
 4. Click the grey **Skip to step 4** button to go to the import settings page.
    - Alternatively, click **Continue to Step 2** to review your import file and optionally filter which posts to import.
@@ -190,7 +190,7 @@ The import for this post type is done. Repeat the above steps for all post types
 
 ### 4.3. Importing a Series
 
-Follow steps 1–3 of the [4.2. Importing the data](#importing-the-data) section above, then continue here.
+Follow steps 1–3 of the [4.2. Importing the data](#42-importing-the-data) section above, then continue here.
 
 4. After uploading the file, click **Continue to Step 2**.
 
