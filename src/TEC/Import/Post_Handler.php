@@ -499,8 +499,11 @@ class Post_Handler {
 		// Grab the post type of the post being imported.
 		$post_type = get_post_type( $post_id );
 
-		// Check if the post type after the import is still the same.
-		if ( $post_type != $record['posttype'] ) {
+		/*
+		 * Only sources exported from a TEC site carry `posttype`; a record without it
+		 * cannot mismatch, and treating it as one would delete the freshly imported post.
+		 */
+		if ( ! empty( $record['posttype'] ) && $post_type != $record['posttype'] ) {
 			$this->add_to_log( "<span style='color:red;'><strong>POST TYPES DON'T MATCH!!!</strong></span> Original post type: `" . $record['posttype'] . "`. Post type after import: `" . $post_type . "`." );
 			/**
 			 * Filter to allow keeping a post even if the new post type doesn't match the original one.
@@ -670,7 +673,17 @@ class Post_Handler {
 
 		// 1. Create and save the hash based on the old post ID.
 		if ( $data['create_hash'] ) {
-			$this->create_hash( $post_id, $post_title, $post_type, $record['id'] );
+			$record_id = $this->get_record_post_id( $record, 'id' );
+
+			/*
+			 * Never fall back to the new post ID: its hash could match another record's
+			 * original ID and relink tickets or attendees to the wrong post.
+			 */
+			if ( $record_id ) {
+				$this->create_hash( $post_id, $post_title, $post_type, $record_id );
+			} else {
+				$this->add_to_log( "Original post ID missing or invalid for " . $post_title . ". Skipping hash creation." );
+			}
 		}
 
 		// 2. Save / Update the origin of the post type.
@@ -818,13 +831,15 @@ class Post_Handler {
 	public function maybe_update_post_data_for_attendee( array $record, int $post_id ): void {
 		$stop = false;
 
+		$old_parent = $this->get_record_post_id( $record, 'parent' );
+
 		// If there is no record for the parent in the source data, then stop.
-		if ( ! isset( $record['parent'] ) ) {
+		if ( ! $old_parent ) {
 			$this->add_to_log( 'Post parent missing from import data...' );
 			$stop = true;
 		} else {
 			// Hash the old linked post type ID (tec_tc_order).
-			$this->meta_value = $this->hashit( $record['parent'] );
+			$this->meta_value = $this->hashit( $old_parent );
 			$this->meta_key   = "_tec_tc_order_export_hash";
 
 			// Grab the new post ID based on the hash.
@@ -873,6 +888,25 @@ class Post_Handler {
 	 */
 	function hashit( string $subject ): string {
 		return hash( 'sha256', $subject, false );
+	}
+
+	/**
+	 * Get a post ID from the import record.
+	 *
+	 * Records built from arbitrary XML/CSV may lack the key, or hold an array
+	 * (empty XML node) or a non-numeric string.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $record The post data.
+	 * @param string $key    The record key holding the post ID.
+	 *
+	 * @return int The post ID, or 0 when missing or invalid.
+	 */
+	private function get_record_post_id( array $record, string $key ): int {
+		$id = filter_var( $record[ $key ] ?? null, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] );
+
+		return false === $id ? 0 : $id;
 	}
 
 	/**

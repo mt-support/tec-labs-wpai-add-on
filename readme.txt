@@ -37,6 +37,10 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Resolved an issue where importing events from a source without the original post ID or post type caused a fatal error and removed the imported event.
+
 = [1.2.0] 2025-07-03 =
 
 * Version - Events Calendar Pro 7.6.1 or higher is required for the migration of Series.
