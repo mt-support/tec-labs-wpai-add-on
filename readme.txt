@@ -37,6 +37,10 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Security - Improved the handling of data displayed in the import log.
+
 = [1.2.0] 2025-07-03 =
 
 * Version - Events Calendar Pro 7.6.1 or higher is required for the migration of Series.

@@ -1237,6 +1237,9 @@ class Post_Handler {
 	/**
 	 * Add a message to the WP All Import log.
 	 *
+	 * @since 1.0.0
+	 * @since TBD Filter the message through `wp_kses()`, as it can contain values from the import file.
+	 *
 	 * @param string $message The message to be added to the log.
 	 *
 	 * @return void
@@ -1244,8 +1247,14 @@ class Post_Handler {
 	function add_to_log( string $message ): void {
 		printf(
 			'<div class="progress-msg tec-labs-migration-add-on"><span style="color: #334aff;">[%1$s] TEC - %2$s</span></div>',
-			date( "H:i:s" ),
-			$message
+			esc_html( date( "H:i:s" ) ),
+			wp_kses(
+				$message,
+				[
+					'strong' => [],
+					'span'   => [ 'style' => [] ],
+				]
+			)
 		);
 		flush();
 	}
