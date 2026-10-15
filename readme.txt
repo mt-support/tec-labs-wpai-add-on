@@ -5,7 +5,7 @@ Tags: events, calendar
 Requires at least: 6.6
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -37,7 +37,7 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
-= [TBD] TBD =
+= [1.2.1] 2026-10-15 =
 
 * Fix - Resolved an issue where importing events from a source without the original post ID or post type caused a fatal error and removed the imported event.
 
