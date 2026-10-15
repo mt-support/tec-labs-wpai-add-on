@@ -37,7 +37,7 @@ We're always interested in your feedback and our [Help Desk](https://support.the
 
 == Changelog ==
 
-= [TBD] TBD =
+= [1.2.1] 2026-10-15 =
 
 * Fix - Resolved an issue where importing events from a source without the original post ID or post type caused a fatal error and removed the imported event.
 

@@ -896,7 +896,7 @@ class Post_Handler {
 	 * Records built from arbitrary XML/CSV may lack the key, or hold an array
 	 * (empty XML node) or a non-numeric string.
 	 *
-	 * @since TBD
+	 * @since 1.2.1
 	 *
 	 * @param array  $record The post data.
 	 * @param string $key    The record key holding the post ID.
@@ -1272,7 +1272,7 @@ class Post_Handler {
 	 * Add a message to the WP All Import log.
 	 *
 	 * @since 1.0.0
-	 * @since TBD Restricted the allowed markup in log messages.
+	 * @since 1.2.1 Restricted the allowed markup in log messages.
 	 *
 	 * @param string $message The message to be added to the log.
 	 *
